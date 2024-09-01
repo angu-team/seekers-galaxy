@@ -48,9 +48,9 @@ export class AxiosRepository {
         return await this.TryElseRetry(url,{},{userId},{},"get",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
     }
 
-    public async createInstance(userId:number,endpoint:string){
+    public async createInstance(userId:number,endpoint:string,pendingHook?:boolean){
         const handleBlockUpdateUrl = `${Properties.server.host}handle/block_update`
-        // const handlePendingUrl = `${Properties.server.host}handle/pending`
+        const handlePendingUrl = pendingHook ? `${Properties.server.host}handle/pending` : false
         const url = `${Properties.andromeda.host}instance`
 
         return await this.TryElseRetry(url,{},{},{userId,endpoint,handleBlockUpdateUrl},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
