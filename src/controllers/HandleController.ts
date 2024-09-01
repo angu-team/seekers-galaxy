@@ -11,13 +11,13 @@ export class HandleController {
 
     private static service:HandleService = new HandleService(this.botRepository,this.axiosRepository)
 
-    @Router.RequestMapping("handle/listen_deployments","post")
+    @Router.RequestMapping("handle/token_deployments","post")
     async handleListenDeployments(req:Request){
         const payload:tokenDeploymentHandleType = req.body
         return HandleController.service.handleTokenDeployments(payload)
     }
 
-    @Router.RequestMapping("handle/pending_listen_deployments","post")
+    @Router.RequestMapping("handle/pending_token_deployments","post")
     async handleListenPendingDeployments(req:Request){
         const payload:tokenDeploymentHandleType = req.body
         return HandleController.service.handlePendingTokenDeployments(payload)
