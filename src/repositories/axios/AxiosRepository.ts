@@ -53,12 +53,12 @@ export class AxiosRepository {
         const handlePendingUrl = pendingHook ? `${Properties.server.host}handle/pending` : false
         const url = `${Properties.andromeda.host}instance`
 
-        return await this.TryElseRetry(url,{},{},{userId,endpoint,handleBlockUpdateUrl},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
+        return await this.TryElseRetry(url,{},{},{userId,endpoint,handleBlockUpdateUrl,handlePendingUrl},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
     }
 
-    public async updateInstance(userId:number,endpoint:string){
+    public async updateInstance(userId:number,endpoint:string,pendingHook?:boolean){
         const handleBlockUpdateUrl = `${Properties.server.host}handle/block_update`
-        const handlePendingUrl = `${Properties.server.host}handle/pending`
+        const handlePendingUrl = pendingHook ? `${Properties.server.host}handle/pending` : false
         const url = `${Properties.andromeda.host}instance`
 
         return await this.TryElseRetry(url,{},{},{userId,endpoint,handleBlockUpdateUrl,handlePendingUrl},"put",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
