@@ -27,7 +27,7 @@ export class AxiosRepository {
         return this.instance.put(url,data,{headers,params})
     }
 
-    protected async listenTokenDeployments(userId:number){
+    public async listenTokenDeployments(userId:number){
         const url = `${Properties.andromeda.host}events/token_deployments`
         const webhook = `${Properties.server.host}handle/token_deployments`
         const identifier = Properties.server.identifier
@@ -35,7 +35,7 @@ export class AxiosRepository {
         return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
     }
 
-    protected async listenPendingTokenDeployments(userId:number){
+    public async listenPendingTokenDeployments(userId:number){
         const url = `${Properties.andromeda.host}events/pending_token_deployments`
         const webhook = `${Properties.server.host}handle/pending_token_deployments`
         const identifier = Properties.server.identifier
@@ -43,7 +43,7 @@ export class AxiosRepository {
         return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
     }
 
-    protected async listenUnicryptLockDetect(userId:number){
+    public async listenUnicryptLockDetect(userId:number){
         const url = `${Properties.andromeda.host}events/uncx_lock`
         const webhook = `${Properties.server.host}handle/uncx_lock`
         const identifier = Properties.server.identifier
