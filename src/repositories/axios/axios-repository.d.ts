@@ -1,0 +1,1 @@
+export type retryOptions = { retryQuantities: number, timeToWaitToNextRetry: number,retry: boolean }
