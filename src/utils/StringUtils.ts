@@ -42,4 +42,12 @@ export class StringUtils {
         return matches ? (matches[0] as string).toLowerCase() : false
     }
 
+    public static compareWithSearchValue(item:string, exactOccurrency:boolean, searchValue:string) {
+        if (exactOccurrency) {
+            return item.toLowerCase() === searchValue.toLowerCase();
+        } else {
+            return item.toLowerCase().includes(searchValue.toLowerCase());
+        }
+    }
+
 }
