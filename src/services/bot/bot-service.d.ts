@@ -38,3 +38,5 @@ export type lockV3HandleType = {
         unlockDate: number
     }
 }
+
+export type tokenInfoType = { name: any, supply: any, symbol: any, owner: any, supportsNftInterface: any, reserves: any,tokenAddress:string }
