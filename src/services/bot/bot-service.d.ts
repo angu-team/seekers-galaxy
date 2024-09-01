@@ -27,3 +27,14 @@ export type TelegramUpdateMessageHandleType = {
     }
 
 }
+
+export type lockV3HandleType = {
+    userId: number,
+    block: ethers.Block,
+    feeData: ethers.FeeData,
+    token: tokenInfoType,
+    lockInfo: {
+        lockPercent: number,
+        unlockDate: number
+    }
+}

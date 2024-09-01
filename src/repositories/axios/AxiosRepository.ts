@@ -43,6 +43,14 @@ export class AxiosRepository {
         return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
     }
 
+    protected async listenUnicryptLockDetect(userId:number){
+        const url = `${Properties.andromeda.host}events/uncx_lock`
+        const webhook = `${Properties.server.host}handle/uncx_lock`
+        const identifier = Properties.server.identifier
+
+        return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
+    }
+
     public async pingRequest(userId:number){
         const url = `${Properties.andromeda.host}ping`
         return await this.TryElseRetry(url,{},{userId},{},"get",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})

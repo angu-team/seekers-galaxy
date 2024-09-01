@@ -1,4 +1,4 @@
-import {tokenDeploymentHandleType, tokenDeploymentType} from "./bot/bot-service";
+import {lockV3HandleType, tokenDeploymentHandleType, tokenDeploymentType} from "./bot/bot-service";
 import {PingResponse} from "../controllers/response/PingResponse";
 import {TelebotRouter3} from "../TelebotRouter3";
 import {AxiosRepository} from "../repositories/axios/AxiosRepository";
@@ -15,6 +15,8 @@ export class HandleService {
     public async handleTokenDeployments(payload: tokenDeploymentHandleType) {}
 
     public async handlePendingTokenDeployments(payload: tokenDeploymentHandleType) {}
+
+    public async handleLockv3(payload: lockV3HandleType){}
 
     public async handleBlockUpdate(userId: number, blockNumber: number) {
         if(this.botRepository.getLastPingMessage() == 0) return;

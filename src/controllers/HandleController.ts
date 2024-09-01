@@ -1,6 +1,6 @@
 import {Router} from "../Router";
 import {Request} from "express";
-import {tokenDeploymentHandleType} from "../services/bot/bot-service";
+import {lockV3HandleType, tokenDeploymentHandleType} from "../services/bot/bot-service";
 import {HandleService} from "../services/HandleService";
 import {AxiosRepository} from "../repositories/axios/AxiosRepository";
 import {BotRepository} from "../repositories/BotRepository";
@@ -23,6 +23,12 @@ export class HandleController {
         return HandleController.service.handlePendingTokenDeployments(payload)
     }
 
+    @Router.RequestMapping("handle/uncx_lock","post")
+    async handleListenLockv3(req:Request) {
+        const payload:lockV3HandleType = req.body
+        return HandleController.service.handleLockv3(payload)
+    }
+
     @Router.RequestMapping("handle/block_update","get")
     async handleBlockUpdate(req:Request) {
         return HandleController.service.handleBlockUpdate(req.query.userId as any,req.query.blockNumber as any)
@@ -32,6 +38,5 @@ export class HandleController {
     async handlePending(req:Request) {
         return HandleController.service.handlePending(req.query.userId as any,req.query.hash as any)
     }
-
 
 }
