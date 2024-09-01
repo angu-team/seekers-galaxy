@@ -17,6 +17,12 @@ export class HandleController {
         return HandleController.service.handleTokenDeployments(payload)
     }
 
+    @Router.RequestMapping("handle/pending_listen_deployments","post")
+    async handleListenPendingDeployments(req:Request){
+        const payload:tokenDeploymentHandleType = req.body
+        return HandleController.service.handlePendingTokenDeployments(payload)
+    }
+
     @Router.RequestMapping("handle/block_update","get")
     async handleBlockUpdate(req:Request) {
         return HandleController.service.handleBlockUpdate(req.query.userId as any,req.query.blockNumber as any)
