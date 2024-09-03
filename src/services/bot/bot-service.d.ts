@@ -11,7 +11,10 @@ export type tokenDeploymentType = {
     callerAddress: string,
     tokenAddress:string,
     decimals:number,
-    receipt: TransactionReceipt
+    receipt: TransactionReceipt,
+    burnPercent?:any,
+    pairV2?:string,
+    pairV3?:string
 }
 
 export type tokenDeploymentHandleType = {
