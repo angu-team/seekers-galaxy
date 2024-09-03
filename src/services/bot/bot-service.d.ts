@@ -9,6 +9,8 @@ export type tokenDeploymentType = {
     reserves: any,
     contractAddress: string,
     callerAddress: string,
+    tokenAddress:string,
+    decimals:number,
     receipt: TransactionReceipt
 }
 
