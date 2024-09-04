@@ -15,10 +15,11 @@ export type tokenInfoType = {
 }
 
 export type handleTokenBurnType = {
-    burnPercent?:any,
-    pairV2?:string,
-    pairV3?:string
-    tokens:tokenInfoType[]
+    networkName:string,
+    feeData: ethers.FeeData,
+    block: ethers.Block,
+    userId:number,
+    tokens:tokenInfoType & {pairV2:string,pairV3:string,burnPercent:any}[]
 }
 
 export type handleTokenDeploymentType = {
