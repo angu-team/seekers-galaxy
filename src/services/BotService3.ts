@@ -1,6 +1,5 @@
-import {AxiosRepository} from "../../repositories/axios/AxiosRepository";
-import {ConfigurationRepository2} from "../../repositories/ConfigurationRepository2";
-import {BotRepository} from "../../repositories/BotRepository";
+import {AxiosRepository} from "../repositories/axios/AxiosRepository";
+import {BotRepository} from "../repositories/BotRepository";
 
 export class BotService {
 

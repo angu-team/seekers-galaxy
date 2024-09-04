@@ -3,7 +3,7 @@ import {ApplyRpcDTO} from "./dto/ApplyRpcDTO";
 // import {TelebotRouter} from "../TelebotRouter";
 import {TelebotRouter3} from "../TelebotRouter3";
 import {PingResponse} from "./response/PingResponse";
-import {BotService} from "../services/bot/BotService3";
+import {BotService} from "../services/BotService3";
 import {BotRepository} from "../repositories/BotRepository";
 import {AxiosRepository} from "../repositories/axios/AxiosRepository";
 

@@ -1,9 +1,9 @@
 import {Router} from "../Router";
 import {Request} from "express";
-import {lockV3HandleType, tokenDeploymentHandleType} from "../services/bot/bot-service";
-import {HandleService} from "../services/HandleService";
 import {AxiosRepository} from "../repositories/axios/AxiosRepository";
 import {BotRepository} from "../repositories/BotRepository";
+import {HandleService} from "../services/handle/HandleService";
+import {handleLockv3Type, handleTokenBurnType, handleTokenDeploymentType} from "../services/handle/handle-service";
 
 export class HandleController {
     private static axiosRepository:AxiosRepository = new AxiosRepository();
@@ -13,19 +13,26 @@ export class HandleController {
 
     @Router.RequestMapping("handle/token_deployments","post")
     async handleListenDeployments(req:Request){
-        const payload:tokenDeploymentHandleType = req.body
+        const payload:handleTokenDeploymentType = req.body
         return HandleController.service.handleTokenDeployments(payload)
     }
 
+    @Router.RequestMapping("handle/token_burn","post")
+    async handleListenTokenBurn(req:Request){
+        const payload:handleTokenBurnType = req.body
+        return HandleController.service.handleTokenBurn(payload)
+    }
+
+
     @Router.RequestMapping("handle/pending_token_deployments","post")
     async handleListenPendingDeployments(req:Request){
-        const payload:tokenDeploymentHandleType = req.body
+        const payload:handleTokenDeploymentType = req.body
         return HandleController.service.handlePendingTokenDeployments(payload)
     }
 
     @Router.RequestMapping("handle/uncx_lock","post")
     async handleListenLockv3(req:Request) {
-        const payload:lockV3HandleType = req.body
+        const payload:handleLockv3Type = req.body
         return HandleController.service.handleLockv3(payload)
     }
 

@@ -1,10 +1,10 @@
-import {lockV3HandleType, tokenDeploymentHandleType, tokenDeploymentType} from "./bot/bot-service";
-import {PingResponse} from "../controllers/response/PingResponse";
-import {TelebotRouter3} from "../TelebotRouter3";
-import {AxiosRepository} from "../repositories/axios/AxiosRepository";
-import {MessageBuilder} from "../MessageBuilder";
-import {ElasticUtils} from "../utils/ElasticUtils";
-import {BotRepository} from "../repositories/BotRepository";
+import {PingResponse} from "../../controllers/response/PingResponse";
+import {TelebotRouter3} from "../../TelebotRouter3";
+import {AxiosRepository} from "../../repositories/axios/AxiosRepository";
+import {MessageBuilder} from "../../MessageBuilder";
+import {ElasticUtils} from "../../utils/ElasticUtils";
+import {BotRepository} from "../../repositories/BotRepository";
+import {handleLockv3Type, handleTokenBurnType, handleTokenDeploymentType, tokenInfoType} from "./handle-service";
 
 export class HandleService {
 
@@ -12,11 +12,13 @@ export class HandleService {
 
     public async handlePending(userId: number, hash: string) {}
 
-    public async handleTokenDeployments(payload: tokenDeploymentHandleType) {}
+    public async handleTokenDeployments(payload: handleTokenDeploymentType) {}
 
-    public async handlePendingTokenDeployments(payload: tokenDeploymentHandleType) {}
+    public async handlePendingTokenDeployments(payload: handleTokenDeploymentType) {}
 
-    public async handleLockv3(payload: lockV3HandleType){}
+    public async handleLockv3(payload: handleLockv3Type){}
+
+    public async handleTokenBurn(payload:handleTokenBurnType){}
 
     public async handleBlockUpdate(userId: number, blockNumber: number) {
         if(this.botRepository.getLastPingMessage() == 0) return;
@@ -36,7 +38,7 @@ export class HandleService {
         })
     }
 
-    private buildMessage(networkName: string, blockNumber: number, gwei: any, gasUsed: any, token: tokenDeploymentType, label: string) {
+    private buildMessage(networkName: string, blockNumber: number, gwei: any, gasUsed: any, token: tokenInfoType, label: string) {
         const message = new MessageBuilder();
         message.setHeader({chain: `${networkName.toUpperCase()}`});
         message.setHeader({block: {blockNumber: blockNumber, gwei, gasUsed}});

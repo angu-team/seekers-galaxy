@@ -1,6 +1,6 @@
 import {ethers, TransactionReceipt} from "ethers";
 
-export type tokenDeploymentType = {
+export type tokenInfoType = {
     name: any,
     supply: any,
     symbol: any,
@@ -11,29 +11,25 @@ export type tokenDeploymentType = {
     callerAddress: string,
     tokenAddress:string,
     decimals:number,
-    receipt: TransactionReceipt,
+    receipt?: TransactionReceipt,
+}
+
+export type handleTokenBurnType = {
     burnPercent?:any,
     pairV2?:string,
     pairV3?:string
+    tokens:tokenInfoType[]
 }
 
-export type tokenDeploymentHandleType = {
+export type handleTokenDeploymentType = {
     networkName:string,
     feeData: ethers.FeeData,
     block: ethers.Block,
     userId:number,
-    tokens: tokenDeploymentType[]
+    tokens: tokenInfoType[]
 }
 
-export type TelegramUpdateMessageHandleType = {
-    reply:{
-        replyTo:number,
-        replyMessage:string
-    }
-
-}
-
-export type lockV3HandleType = {
+export type handleLockv3Type = {
     userId: number,
     block: ethers.Block,
     feeData: ethers.FeeData,
@@ -43,5 +39,3 @@ export type lockV3HandleType = {
         unlockDate: number
     }
 }
-
-export type tokenInfoType = { name: any, supply: any, symbol: any, owner: any, supportsNftInterface: any, reserves: any,tokenAddress:string }
