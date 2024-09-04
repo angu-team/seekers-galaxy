@@ -19,7 +19,7 @@ export type handleTokenBurnType = {
     feeData: ethers.FeeData,
     block: ethers.Block,
     userId:number,
-    tokens:tokenInfoType & {pairV2:string,pairV3:string,burnPercent:any}[]
+    tokens: ({ pairV2: string, pairV3: string, burnPercent: any } & tokenInfoType)[]
 }
 
 export type handleTokenDeploymentType = {
