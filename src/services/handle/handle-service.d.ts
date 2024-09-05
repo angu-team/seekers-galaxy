@@ -45,5 +45,5 @@ export type handleRemoveLiquidityType = {
     userId:number,
     block:ethers.Block,
     feeData: ethers.FeeData,
-    token: (tokenInfoType & {liquidity:any})[]
+    tokens: (tokenInfoType & {liquidity:any})[]
 }
