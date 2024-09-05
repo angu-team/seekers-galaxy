@@ -23,5 +23,6 @@ import {HandleController} from "./controllers/HandleController";
 })()
 
 process.on('uncaughtException', (err) => {
+    console.log(err)
     ElasticUtils.putTemplate("error", {name:err.name,message: err.message,stack:err.stack},"error",true)
 });
