@@ -57,7 +57,7 @@ export class TelebotRouter3 {
                 const loading_message = await TelebotRouter3.client.sendMessage(
                     msg.chat.id,"Aguarde ...",{ replyToMessage: msg.message_id }
                 ).catch((e) => {
-                    ElasticUtils.putTemplate("logs",{message:`Error on send message to ${msg.chat.id} responding ${msg.text} ${e}`},"error",true)
+                    throw e;
                 });
 
                 try {
@@ -103,17 +103,16 @@ export class TelebotRouter3 {
     }
 
     private static async senderMessageControl(messageResponse:string,messageReceived:string,chatId:number,loadingMessage:{chatId:number,messageId:number}){
-        ElasticUtils.putTemplate("logs",{message:`Telebot sent a response to ${chatId} responding ${messageReceived}`},"info",true)
 
         if (messageResponse.length > 4096) {
             await TelebotRouter3.client.deleteMessage(loadingMessage.chatId,loadingMessage.messageId).catch((e) => {
-                ElasticUtils.putTemplate("logs",{message:`Error on delete message to ${chatId} responding ${messageReceived} ${e}`},"error",true)
+                throw e;
             })
 
             for (let i = 0; i < messageResponse.length; i += 4096) {
                 const chunk = messageResponse.slice(i, i + 4096);
                 TelebotRouter3.client.sendMessage(loadingMessage.chatId, chunk,{ parseMode: "markdown",webPreview:false}).catch((e) => {
-                    ElasticUtils.putTemplate("logs",{message:`Error on send message to ${chatId} responding ${messageReceived} ${e}`},"error",true)
+                    throw e;
                 })
             }
         } else {
@@ -124,8 +123,7 @@ export class TelebotRouter3 {
                 messageResponse,
                 { parseMode: "markdown",webPreview:false} as any
             ).catch((e) => {
-                console.log(messageResponse)
-                ElasticUtils.putTemplate("logs",{message:`Error on edit message to ${chatId} responding ${messageReceived} ${e}`},"error",true)
+                throw e;
             })
         }
 

@@ -40,3 +40,10 @@ export type handleLockv3Type = {
         unlockDate: number
     }
 }
+
+export type handleRemoveLiquidityType = {
+    userId:number,
+    block:ethers.Block,
+    feeData: ethers.FeeData,
+    token: (tokenInfoType & {liquidity:any})[]
+}

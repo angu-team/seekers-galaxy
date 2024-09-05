@@ -3,6 +3,7 @@ import axios, {AxiosError, AxiosResponse} from "axios";
 import * as AxiosLogger from 'axios-logger';
 import {Properties} from "../../Properties";
 import {ElasticUtils} from "../../utils/ElasticUtils";
+import {tokenInfoType} from "../../services/handle/handle-service";
 
 export class AxiosRepository {
     private instance = axios.create();
@@ -27,12 +28,41 @@ export class AxiosRepository {
         return this.instance.put(url,data,{headers,params})
     }
 
+    public async listenRemoveLiquidity(userId:number){
+        const url = `${Properties.andromeda.host}events/remove_liquidity`
+        const webhook = `${Properties.server.host}handle/remove_liquidity`
+        const identifier = Properties.server.identifier
+
+        return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
+    }
+
     public async listenTokenDeployments(userId:number){
         const url = `${Properties.andromeda.host}events/token_deployments`
         const webhook = `${Properties.server.host}handle/token_deployments`
         const identifier = Properties.server.identifier
 
         return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
+    }
+
+    public async getHistoricRemoveLiquidityToken(userId:number,tokenAddress:string,fromBlock:number):Promise<any[]>{
+        const url = `${Properties.andromeda.host}logs/history_remove_liquidity`
+        return await this.TryElseRetry(url,{},{userId,tokenAddress,fromBlock},{},"get",{retry:true,retryQuantities:5,timeToWaitToNextRetry:1000})
+    }
+
+
+    public async getAbi(userId:number,address:string){
+        const url = `${Properties.andromeda.host}whatsabi/get_abi?&userId=${userId}&address=${address}`
+        return await this.TryElseRetry(url,{},{},{},"get",{retry:true,retryQuantities:5,timeToWaitToNextRetry:1000})
+    }
+
+    public async getHistoricTokenCreations(userId:number,fromBlock:number,toBlock:number){
+        const url = `${Properties.andromeda.host}logs/history_creation_tokens`
+        return await this.TryElseRetry(url,{},{},{userId,fromBlock,toBlock},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
+    }
+
+    public async getTokenInfo(userId:number,address:string):Promise<tokenInfoType>{
+        const url = `${Properties.andromeda.host}contract/token_info`
+        return await this.TryElseRetry(url,{},{userid:userId,address},{},"get",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
     }
 
     public async listenTokenBurn(userId:number){
@@ -108,11 +138,9 @@ export class AxiosRepository {
                 if (error instanceof AxiosError) {
 
                     if(error.response) {
-                        ElasticUtils.putTemplate("logs",{message:error.response.data},"error",true)
                         throw error.response.data
                     }
 
-                    ElasticUtils.putTemplate("logs",{message:error.message},"error",true)
                     throw new Error(`✖️ There is no response from the andromeda server\n${error.message}`)
                 }
 

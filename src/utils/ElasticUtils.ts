@@ -20,18 +20,32 @@ export class ElasticUtils {
         }
     }
 
-    public static async putTemplate(index:string | null,document:any,level:"error" | "info",verbose:boolean,identifier?:string){
+    public static async putTemplate(index:string | null,document:any,level:"error" | "info",verbose:boolean,conditional?:boolean,identifier?:string){
         index = `${identifier || Properties.server.identifier}_${index}`
         const timestamp = new Date();
 
         await this.createIndexIfNeeded(index || Properties.server.identifier as string)
-        if(verbose && document.message) console.info(`[${timestamp.toLocaleString("pt-BR")}] ${level.toUpperCase()}:: ${document.message}`);
+        if(verbose && document.message) console[level](`[${timestamp.toLocaleString("pt-BR")}] ${level.toUpperCase()}:: ${document.message}`);
+
+        if(conditional){
+            const search = await this.findTemplate(index,document)
+            if(search) return false;
+        }
 
         return this.elasticConfigurations.getClient().index({index,document})
     }
 
     private static async findTemplate(index:string,document:any,identifier?:string){
-        const search = await this.elasticConfigurations.getClient().search({index,query:{match:document} })
+        const options = {
+            index,
+            query:{ bool:{
+                    must: Object.keys(document)
+                            .filter(key => document[key] !== null)
+                            .map(key => ({match: {[key]: document[key]}})) }
+            }
+        }
+
+        const search = await this.elasticConfigurations.getClient().search(options)
         return search.hits.hits.length > 0 ? search.hits.hits : false
     }
 

@@ -3,7 +3,12 @@ import {Request} from "express";
 import {AxiosRepository} from "../repositories/axios/AxiosRepository";
 import {BotRepository} from "../repositories/BotRepository";
 import {HandleService} from "../services/handle/HandleService";
-import {handleLockv3Type, handleTokenBurnType, handleTokenDeploymentType} from "../services/handle/handle-service";
+import {
+    handleLockv3Type,
+    handleRemoveLiquidityType,
+    handleTokenBurnType,
+    handleTokenDeploymentType
+} from "../services/handle/handle-service";
 
 export class HandleController {
     private static axiosRepository:AxiosRepository = new AxiosRepository();
@@ -22,7 +27,6 @@ export class HandleController {
         const payload:handleTokenBurnType = req.body
         return HandleController.service.handleTokenBurn(payload)
     }
-
 
     @Router.RequestMapping("handle/pending_token_deployments","post")
     async handleListenPendingDeployments(req:Request){
@@ -46,4 +50,10 @@ export class HandleController {
         return HandleController.service.handlePending(req.query.userId as any,req.query.hash as any)
     }
 
+    @Router.RequestMapping("handle/remove_liquidity","post")
+    async handleRemoveLiquidity(req:Request) {
+        console.log(req,"uer")
+        const payload:handleRemoveLiquidityType = req.body
+        return HandleController.service.handleRemoveLiquidity(payload)
+    }
 }

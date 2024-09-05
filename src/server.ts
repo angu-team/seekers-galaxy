@@ -21,7 +21,7 @@ import {HandleController} from "./controllers/HandleController";
     TelebotRouter3.initialize()
     Router.initialize();
 })()
+
 process.on('uncaughtException', (err) => {
-    console.log(err)
-    // ElasticUtils.putTemplate("logs",String(err),"error",true)
+    ElasticUtils.putTemplate("error", {name:err.name,message: err.message,stack:err.stack},"error",true)
 });
