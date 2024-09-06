@@ -68,7 +68,7 @@ services:
       REDIS_HOSTS: redis
       REDIS_HOST: redis
       REDIS_PORT: redis:6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PASSWORD: 251410
       HTTP_USER: root
       HTTP_PASSWORD: root
     ports:
