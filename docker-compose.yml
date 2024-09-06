@@ -2,7 +2,7 @@ services:
 
   elasticsearch:
     build:
-      context: elasticsearch/
+      context: dockerimages/elasticsearch/
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     ports:
@@ -15,7 +15,7 @@ services:
 
   logstash:
     build:
-      context: logstash/
+      context: dockerimages/logstash/
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
@@ -30,7 +30,7 @@ services:
 
   kibana:
     build:
-      context: kibana/
+      context: dockerimages/kibana/
     volumes:
       - ./kibana/config/:/usr/share/kibana/config:ro
     ports:
@@ -52,7 +52,7 @@ services:
 
   redis:
     build:
-      context: redis/
+      context: dockerimages/redis/
     ports:
       - "6379:6379"
     volumes:
@@ -62,7 +62,8 @@ services:
       - redis-commander
 
   redis-commander:
-    image: rediscommander/redis-commander:latest
+    build:
+      context: dockerimages/redis-commander
     restart: always
     environment:
       REDIS_HOSTS: redis
@@ -72,7 +73,7 @@ services:
       HTTP_USER: root
       HTTP_PASSWORD: root
     ports:
-      - "6380:6380"
+      - "8081:8081"
 
 volumes:
   redis_data:
