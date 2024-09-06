@@ -4,7 +4,13 @@ import {AxiosRepository} from "../../repositories/axios/AxiosRepository";
 import {MessageBuilder} from "../../MessageBuilder";
 import {ElasticUtils} from "../../utils/ElasticUtils";
 import {BotRepository} from "../../repositories/BotRepository";
-import {handleLockv3Type, handleTokenBurnType, handleTokenDeploymentType, tokenInfoType} from "./handle-service";
+import {
+    handleLockv3Type,
+    handleRemoveLiquidityType,
+    handleTokenBurnType,
+    handleTokenDeploymentType,
+    tokenInfoType
+} from "./handle-service";
 
 export class HandleService {
 
@@ -19,6 +25,8 @@ export class HandleService {
     public async handleLockv3(payload: handleLockv3Type){}
 
     public async handleTokenBurn(payload:handleTokenBurnType){}
+
+    public async handleRemoveLiquidity(payload:handleRemoveLiquidityType){}
 
     public async handleBlockUpdate(userId: number, blockNumber: number) {
         if(this.botRepository.getLastPingMessage() == 0) return;
