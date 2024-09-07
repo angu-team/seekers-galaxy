@@ -5,7 +5,7 @@ import {MessageBuilder} from "../../MessageBuilder";
 import {ElasticUtils} from "../../utils/ElasticUtils";
 import {BotRepository} from "../../repositories/BotRepository";
 import {
-    handleLockv3Type,
+    handleLockv3Type, handlePendingTokenFailedType,
     handleRemoveLiquidityType,
     handleTokenBurnType,
     handleTokenDeploymentType,
@@ -27,6 +27,8 @@ export class HandleService {
     public async handleTokenBurn(payload:handleTokenBurnType){}
 
     public async handleRemoveLiquidity(payload:handleRemoveLiquidityType){}
+
+    public async handlePendingTokenFailed(payload:handlePendingTokenFailedType){}
 
     public async handleBlockUpdate(userId: number, blockNumber: number) {
         if(this.botRepository.getLastPingMessage() == 0) return;

@@ -36,6 +36,14 @@ export class AxiosRepository {
         return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
     }
 
+    public async listenPendingTokenFailedEvent(userId:number){
+        const url = `${Properties.andromeda.host}events/pending_token_failed`
+        const webhook = `${Properties.server.host}handle/pending_token_failed`
+        const identifier = Properties.server.identifier
+
+        return await this.TryElseRetry(url,{},{},{userId,webhook,identifier},"post",{retry:true,retryQuantities:1,timeToWaitToNextRetry:1000})
+    }
+
     public async listenTokenDeployments(userId:number){
         const url = `${Properties.andromeda.host}events/token_deployments`
         const webhook = `${Properties.server.host}handle/token_deployments`

@@ -47,3 +47,11 @@ export type handleRemoveLiquidityType = {
     feeData: ethers.FeeData,
     tokens: (tokenInfoType & {liquidity:any})[]
 }
+
+export type handlePendingTokenFailedType = {
+    networkName:string,
+    feeData: ethers.FeeData,
+    block: ethers.Block,
+    userId:number,
+    tokens: tokenInfoType[]
+}

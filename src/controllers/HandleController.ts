@@ -4,7 +4,7 @@ import {AxiosRepository} from "../repositories/axios/AxiosRepository";
 import {BotRepository} from "../repositories/BotRepository";
 import {HandleService} from "../services/handle/HandleService";
 import {
-    handleLockv3Type,
+    handleLockv3Type, handlePendingTokenFailedType,
     handleRemoveLiquidityType,
     handleTokenBurnType,
     handleTokenDeploymentType
@@ -32,6 +32,12 @@ export class HandleController {
     async handleListenPendingDeployments(req:Request){
         const payload:handleTokenDeploymentType = req.body
         return HandleController.service.handlePendingTokenDeployments(payload)
+    }
+
+    @Router.RequestMapping("handle/pending_token_failed","post")
+    async handlePendingTokenFailedEvent(req:Request){
+        const payload:handlePendingTokenFailedType = req.body
+        return HandleController.service.handlePendingTokenFailed(payload)
     }
 
     @Router.RequestMapping("handle/uncx_lock","post")
