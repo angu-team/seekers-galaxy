@@ -18,9 +18,10 @@ jobs:
       - name: Login to Docker Registry
         uses: docker/login-action@v2
         with:
+          registry: ${{ secrets.DOCKER_REGISTRY_URL }}
           username: admin
           password: admin
 
       - name: Build and push Docker image
         run: |
-          docker buildx build --tag ${{ secrets.DOCKER_REGISTRY }}/redebot:latest --push .
+          docker buildx build --tag ${{ secrets.DOCKER_REGISTRY_URL }}/redebot:latest --push .
