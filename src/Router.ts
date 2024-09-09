@@ -59,7 +59,7 @@ export class Router {
         }
 
         if(Properties.envFile == ".env.production") ElasticUtils.putTemplate("server",document,"info",true);
-        console.info(`[${new Date().toLocaleString("pt-BR")}] ${tokens.method(req, res)}:: ${tokens.url(req, res)} - ${tokens.status(req, res)} - ${tokens['response-time'](req, res)} 'ms'`);
+        if(Properties.envFile != ".env.production") console.info(`[${new Date().toLocaleString("pt-BR")}] ${tokens.method(req, res)}:: ${tokens.url(req, res)} - ${tokens.status(req, res)} - ${tokens['response-time'](req, res)} 'ms'`);
 
         return ""
     }
