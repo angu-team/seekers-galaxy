@@ -33,25 +33,6 @@ services:
     depends_on:
       - elasticsearch
 
-  redis:
-    build:
-      context: ./dockerimages/redis/
-    volumes:
-      - redis_data:/data
-    links:
-      - redis-commander
-
-  redis-commander:
-    build:
-      context: ./dockerimages/redis-commander
-    restart: always
-    environment:
-      REDIS_HOSTS: redis
-      REDIS_HOST: redis
-      REDIS_PORT: redis:6379
-      HTTP_USER: root
-      HTTP_PASSWORD: root
-
 volumes:
   redis_data:
 
