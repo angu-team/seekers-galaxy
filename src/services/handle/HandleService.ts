@@ -30,6 +30,8 @@ export class HandleService {
 
     public async handlePendingTokenFailed(payload:handlePendingTokenFailedType){}
 
+    public async handleTokenFailed(payload:handlePendingTokenFailedType){}
+
     public async handleBlockUpdate(userId: number, blockNumber: number) {
         if(this.botRepository.getLastPingMessage() == 0) return;
 
