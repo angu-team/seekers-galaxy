@@ -36,7 +36,7 @@ export class BotController {
 
     @TelebotRouter3.ReceiveMessage("ping","literal")
     async ping(userId:number,command:string,args: string,first_name:string,loading_message_id:number) {
-        const serviceResponse:{ms:number,block:number,syncing:boolean,provider:string} = await BotController.service.ping(userId,loading_message_id)
+        const serviceResponse:{ms:number,block:number,syncing:boolean,endpoint:string}[] = await BotController.service.ping(userId,loading_message_id)
         const message = PingResponse(serviceResponse)
         return {message}
     }
