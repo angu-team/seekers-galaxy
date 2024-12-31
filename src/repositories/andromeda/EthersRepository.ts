@@ -12,4 +12,10 @@ export class EthersRepository {
         const endpoint = `${this.uri}${userId}/apply_rpc`;
         return AxiosClient.make(endpoint,{},{},{endpoint:provider},'post')
     }
+
+    listenDeployErc20(userId:number,webhook:string):Promise<null> {
+        const endpoint = `${this.uri}${userId}/listen_deploy_erc20`;
+        return AxiosClient.make(endpoint,{},{},{webhook},'post')
+    }
+
 }
