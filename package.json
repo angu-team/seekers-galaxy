@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development tsx ./src/server.ts",
+    "dev": "cross-env NODE_ENV=development tsx ./src/Main.ts",
     "start:dev": "cross-env NODE_ENV=development node ./dist/src/server.js",
     "start": "cross-env NODE_ENV=production node ./dist/src/server.js",
     "build": "tsc --build",
