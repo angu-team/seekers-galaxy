@@ -16,7 +16,6 @@ interface IResponse {
 
 export class AccountRepository {
     private readonly etherscanUrl = 'https://api.etherscan.io/api?module=account';
-    // private readonly key: string = "GRUWG9C4TQCE4VY4PJRJUSKQR9SWAH73E2"
 
     txList(address:string,params?:IParams):Promise<IResponse>{
         const key = "F36Y8METRRFWU3REXXH9DRQTN5NP7QCZVC"
