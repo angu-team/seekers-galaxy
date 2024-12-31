@@ -14,5 +14,5 @@ const ethersRepository = new EthersRepository(process.env.ANDROMEDA_URL!);
     new EthersController(ethersRepository);
 
     TelebotRouter3.initialize(process.env.TELEBOT_TOKEN!)
-    Router.initialize(process.env.SERVER_PORT!)
+    Router.initialize()
 })()
