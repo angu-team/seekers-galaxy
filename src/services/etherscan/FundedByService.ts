@@ -5,7 +5,7 @@ export class FundedByService {
     }
 
     async exec(address: string) {
-        const firstTransaction: { result: { from: string,value:string }[] } = await this.accountRepository.txList(address, {
+        const firstTransaction = await this.accountRepository.txList(address, {
             offset: 1,
             page: 1,
             sort: 'asc'
