@@ -2,20 +2,22 @@ import {AxiosClient} from "../../AxiosClient";
 
 
 export class EthersRepository {
-    private readonly uri;
+    private readonly endpoint = "ethers/"
 
-    constructor(andromedaUrl: string) {
-        this.uri = `${andromedaUrl}ethers/`;
-    }
+    constructor(private andromedaUrl: string) {}
 
     applyRpc(userId:number,provider:string):Promise<null> {
-        const endpoint = `${this.uri}${userId}/apply_rpc`;
-        return AxiosClient.make(endpoint,{},{},{endpoint:provider},'post')
+        const url = `${this.andromedaUrl}${this.endpoint}${userId}/apply_rpc`;
+        return AxiosClient.make(url,{},{},{endpoint:provider},'post')
     }
 
-    listenDeployErc20(userId:number,webhook:string):Promise<null> {
-        const endpoint = `${this.uri}${userId}/listen_deploy_erc20`;
-        return AxiosClient.make(endpoint,{},{},{webhook},'post')
+    listenDeployErc20(userId:number,server_host:string):Promise<null> {
+        const webhook_endpoint = "listen_deploy_erc20"
+
+        const url = `${this.andromedaUrl}${this.endpoint}${userId}/${webhook_endpoint}`;
+        const webhook = `${server_host}${this.endpoint}${webhook_endpoint}`;
+
+        return AxiosClient.make(url,{},{},{webhook},'post')
     }
 
 }
