@@ -1,9 +1,6 @@
 import express, {Express,Request} from "express";
 import morgan from "morgan";
-import {Properties} from "./Properties";
 import bodyParser from "body-parser";
-import {ElasticConfigurations} from "./repositories/configurations/elastic/ElasticConfigurations";
-import {ElasticUtils} from "./utils/ElasticUtils";
 
 type methods = "get" | "post" | "put" | "delete"
 
@@ -14,7 +11,7 @@ export class Router {
         .use(bodyParser.urlencoded({ extended: false }))
         .use(bodyParser.json())
 
-    public static initialize(){
+    public static initialize(port:string){
         morgan.token('body', (req:Request) => {
             return JSON.stringify(req.body)
         })
@@ -23,8 +20,8 @@ export class Router {
             return JSON.stringify(req.headers.identifier)
         })
 
-        Router.express.listen(Properties.server.port).on("connect",() => {
-            console.info("server listening on port", Properties.server.port)
+        Router.express.listen(port).on("connect",() => {
+            console.info("server listening on port", port)
         })
     }
 
@@ -50,17 +47,7 @@ export class Router {
     }
 
     private static logRequest(tokens:any, req:any, res:any){
-        const document = {
-            method:tokens.method(req,res),
-            url: tokens.url(req, res),
-            status: tokens.status(req, res),
-            time: tokens['response-time'](req, res),
-            date: new Date()
-        }
-
-        if(Properties.envFile == ".env.production") ElasticUtils.putTemplate("server",document,"info",true);
-        if(Properties.envFile != ".env.production") console.info(`[${new Date().toLocaleString("pt-BR")}] ${tokens.method(req, res)}:: ${tokens.url(req, res)} - ${tokens.status(req, res)} - ${tokens['response-time'](req, res)} 'ms'`);
-
+        console.info(`[${new Date().toLocaleString("pt-BR")}] ${tokens.method(req, res)}:: ${tokens.url(req, res)} - ${tokens.status(req, res)} - ${tokens['response-time'](req, res)} 'ms'`);
         return ""
     }
 
