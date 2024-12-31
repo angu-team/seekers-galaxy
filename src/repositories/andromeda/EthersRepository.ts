@@ -20,9 +20,9 @@ export class EthersRepository {
         return AxiosClient.make(url,{},{},{webhook},'post')
     }
 
-    callFunctions(userId:number,functions_name:string[]):Promise<object> {
+    callFunctions(userId:number,address:string,functions_name:string[],abi:string):Promise<object> {
         const url = `${this.andromedaUrl}${this.endpoint}${userId}/call_functions`;
-        return AxiosClient.make(url,{},{},{functions_name},'post')
+        return AxiosClient.make(url,{},{},{address,functions_name,abi},'post')
     }
 
 }
