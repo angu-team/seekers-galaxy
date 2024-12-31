@@ -18,7 +18,6 @@ export class TelebotRouter3 {
     private static patternRoutes: { [funcName: string]: { method: any, message: string | RegExp } } = {}
     private static bodyReg = /^\/(\w+)(?:\s+((?:\S+\s+)*\S+))?$/gm;
     public static client: telebot;
-    public static dariBotNotifierOnlyLabels: telebot;
 
     public static initialize(token:string) {
 
@@ -30,7 +29,6 @@ export class TelebotRouter3 {
         });
 
         TelebotRouter3.client.start()
-        TelebotRouter3.dariBotNotifierOnlyLabels.start()
 
         TelebotRouter3.ListenMessages()
         TelebotRouter3.ListenButtons()
@@ -101,13 +99,20 @@ export class TelebotRouter3 {
                 }
 
                 if(response?.message){
-                    TelebotRouter3.senderMessageControl(response.message, msg.text, msg.chat.id, {
+                    await TelebotRouter3.senderMessageControl(response.message, msg.text, msg.chat.id, {
                         chatId: loading_message.chat.id,
                         messageId: loading_message.message_id
                     })
                     return response;
                 }
-                TelebotRouter3.client.deleteMessage(loading_message.chat.id,loading_message.message_id)
+
+                await TelebotRouter3.client.editMessageText({
+                        chatId: loading_message.chat.id,
+                        messageId: loading_message.message_id,
+                    },
+                    "Done",
+                )
+
             }
 
         })
