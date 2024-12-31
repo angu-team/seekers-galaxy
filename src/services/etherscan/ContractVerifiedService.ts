@@ -1,14 +1,19 @@
 import {ContractRepository} from "../../repositories/etherscan/ContractRepository";
 
+interface IResponse {
+    verified:boolean,
+    compilerVersion:string,
+}
+
 export class ContractVerifiedService {
     constructor(private contractRepository:ContractRepository) {
     }
 
     async exec(address:string){
-        const getAbi = await this.contractRepository.getAbi(address)
-        const isNotVerified = getAbi.result === "Contract source code not verified";
+        const getSourceCode = await this.contractRepository.getSourceCode(address)
+        const verified = getSourceCode.result[0].ABI !== 'Contract source code not verified'
 
-        return !isNotVerified
+        return {verified, compilerVersion:getSourceCode.result[0].CompilerVersion}
     }
 
 }

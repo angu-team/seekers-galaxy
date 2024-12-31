@@ -16,4 +16,11 @@ export class ContractRepository {
         return AxiosClient.make(url,{},{},{},"get");
     }
 
+    getSourceCode(address: string):Promise<IResponse> {
+        const key = "GRUWG9C4TQCE4VY4PJRJUSKQR9SWAH73E2"
+
+        const url = `${this.etherscanUrl}&action=getsourcecode&address=${address}&apikey=${key}`;
+        return AxiosClient.make(url,{},{},{},"get");
+    }
+
 }
