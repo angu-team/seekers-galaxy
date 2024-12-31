@@ -1,14 +1,12 @@
 {
-  "name": "redebot",
+  "name": "seekers-galaxy",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx ./src/Main.ts",
-    "start:dev": "cross-env NODE_ENV=development node ./dist/src/server.js",
-    "start": "cross-env NODE_ENV=production node ./dist/src/server.js",
-    "build": "tsc --build",
-    "clean": "tsc --build --clean",
+    "start": "cross-env NODE_ENV=production node ./dist/src/Main.js",
+    "build": "swc src -d ./dist",
     "dev-debug": "ts-node --inspect-brk src/server.ts"
   },
   "keywords": [],
@@ -17,6 +15,7 @@
   "dependencies": {
     "@elastic/elasticsearch": "^8.14.0",
     "@shazow/whatsabi": "^0.14.1",
+    "@swc/core": "^1.10.4",
     "@viem/anvil": "^0.0.10",
     "axios": "^1.7.2",
     "body-parser": "^1.20.2",
