@@ -33,9 +33,10 @@ export class CallMaxBuyService {
 
     async exec(userId:number,address:string){
         let abi = JSON.stringify(this.abi);
-        let call = await this.repository.callFunctions(userId,address,this.functions,abi);
+        let call:any = await this.repository.callFunctions(userId,address,this.functions,abi);
+        let firstKey = this.getFirstKeyOrNull(call);
 
-        return this.getFirstKeyOrNull(call);
+        return firstKey ? call[firstKey] : null;
     }
 
     private getFirstKeyOrNull(obj: Record<string, any>): string | null {
