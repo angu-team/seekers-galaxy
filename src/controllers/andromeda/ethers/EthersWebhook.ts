@@ -14,4 +14,9 @@ export class EthersWebhook {
         console.log(request.body);
     }
 
+    @Router.RequestMapping("ethers/listen_contract_events","post")
+    listenContractEventsWebhook(request:Request) {
+        console.log(request.body);
+    }
+
 }
