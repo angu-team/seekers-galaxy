@@ -1,4 +1,4 @@
-import {AccountRepository} from "../../../src/repositories/etherscan/AccountRepository";
+import {AccountRepository} from "../../repositories/etherscan/AccountRepository";
 
 export class EtherscanController {
     private readonly accountRepository:AccountRepository;

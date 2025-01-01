@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development tsx Main.ts",
+    "dev": "cross-env NODE_ENV=development tsx ./src/Main.ts",
     "start": "cross-env NODE_ENV=production node ./dist/src/Main.js",
     "build": "swc src -d ./dist",
-    "dev-debug": "ts-node --inspect-brk Main.ts",
+    "dev-debug": "ts-node --inspect-brk src/Main.ts",
     "test": "jest"
   },
   "keywords": [],

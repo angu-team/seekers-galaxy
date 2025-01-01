@@ -1,5 +1,5 @@
-import {EthersRepository} from "../../../../src/repositories/andromeda/EthersRepository";
-import {TelebotRouter3} from "../../TelebotRouter3";
+import {EthersRepository} from "../../../repositories/andromeda/EthersRepository";
+import {TelebotRouter3} from "../../../TelebotRouter3";
 
 export class EthersController {
     private static repository: EthersRepository;
