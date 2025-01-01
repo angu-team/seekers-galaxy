@@ -1,5 +1,5 @@
 import telebot from "telebot";
-import {StringUtils} from "./utils/StringUtils";
+import {StringUtils} from "../../src/utils/StringUtils";
 
 type UserMessage = {
     text: any,
