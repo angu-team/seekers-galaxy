@@ -3,7 +3,7 @@ import {AxiosClient} from "../../AxiosClient";
 
 export class EthersRepository {
     private readonly endpoint = "ethers/"
-
+    callFunctionsCache:{[address:string]:any} = {}
     constructor(private andromedaUrl: string) {}
 
     applyRpc(userId:number,provider:string):Promise<null> {
@@ -29,8 +29,14 @@ export class EthersRepository {
         return AxiosClient.make(url,{},{},{webhook,address,event_signature},'post')
     }
 
-    callFunctions(userId:number,address:string,functions_name:string[],abi:string):Promise<object> {
+    async callFunctions(userId:number,address:string,functions_name:string[],abi:string,useCache?:boolean):Promise<object> {
         const url = `${this.andromedaUrl}${this.endpoint}${userId}/call_functions`;
+
+        if(useCache){
+            this.callFunctionsCache[address] ??= await AxiosClient.make(url,{},{},{address,functions_name,abi},'post')
+            return this.callFunctionsCache[address]
+        }
+
         return AxiosClient.make(url,{},{},{address,functions_name,abi},'post')
     }
 

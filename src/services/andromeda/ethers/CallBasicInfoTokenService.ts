@@ -65,7 +65,7 @@ export class CallBasicInfoTokenService {
 
     async exec(userId:number,address:string){
         let abi = JSON.stringify(this.abi);
-        let call:any = await this.repository.callFunctions(userId,address,this.functions,abi);
+        let call:any = await this.repository.callFunctions(userId,address,this.functions,abi,true);
 
         return call;
     }
