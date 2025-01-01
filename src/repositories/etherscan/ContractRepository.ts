@@ -7,20 +7,27 @@ interface IResponse {
 }
 
 export class ContractRepository {
+    sourceCodeCache:{[address:string]:IResponse} = {};
+    abiCache:{[address:string]:IResponse} = {};
+
     private readonly etherscanUrl = 'https://api.etherscan.io/api?module=contract&action=getabi&address=';
 
-    getAbi(address: string):Promise<IResponse> {
+    async getAbi(address: string):Promise<IResponse> {
         const key = "GRUWG9C4TQCE4VY4PJRJUSKQR9SWAH73E2"
 
         const url = `${this.etherscanUrl}&action=getabi&address=${address}&apikey=${key}`;
-        return AxiosClient.make(url,{},{},{},"get");
+        this.abiCache[address] ??= await AxiosClient.make(url,{},{},{},"get");
+
+        return this.abiCache[address];
     }
 
-    getSourceCode(address: string):Promise<IResponse> {
+    async getSourceCode(address: string):Promise<IResponse> {
         const key = "GRUWG9C4TQCE4VY4PJRJUSKQR9SWAH73E2"
 
         const url = `${this.etherscanUrl}&action=getsourcecode&address=${address}&apikey=${key}`;
-        return AxiosClient.make(url,{},{},{},"get");
+        this.sourceCodeCache[address] ??= await AxiosClient.make(url, {}, {}, {}, "get");
+
+        return this.sourceCodeCache[address]
     }
 
 }
