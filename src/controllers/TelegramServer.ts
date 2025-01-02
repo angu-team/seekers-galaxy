@@ -1,20 +1,21 @@
 import {TelegramClient} from "telegram";
 import * as readline from "node:readline";
-import {StoreSession} from "telegram/sessions";
+import {StoreSession, StringSession} from "telegram/sessions";
 import {NewMessage, NewMessageEvent} from "telegram/events";
 import {StringUtils} from "../utils/StringUtils";
 
 interface IInitialize {
-    apiId:number;
-    apiHash:string;
+    apiId: number;
+    apiHash: string;
+    session: string
 }
 
 export class TelegramServer {
     private static literalRoutes: { [chatId: string]: { method: any, functionName: string } } = {}
-    public static client:TelegramClient;
+    public static client: TelegramClient;
 
-    public static async initialize(params:IInitialize) {
-        const session = new StoreSession("telegram_sessions");
+    public static async initialize(params: IInitialize) {
+        const stringSession = new StringSession(params.session); // fill this later with the value from session.save()
 
         const rl = readline.createInterface({
             input: process.stdin,
@@ -22,44 +23,31 @@ export class TelegramServer {
         });
 
         this.client = new TelegramClient(
-            session, params.apiId, params.apiHash, {
-            connectionRetries:5
-        })
+            stringSession, params.apiId, params.apiHash, {
+                connectionRetries: 5
+            })
 
-        console.info("[Telegram] Inicializando o cliente...");
+        await this.client.start({
+            phoneNumber: async () =>
+                new Promise((resolve) =>
+                    rl.question("Please enter your number: ", resolve)
+                ),
+            password: async () =>
+                new Promise((resolve) =>
+                    rl.question("Please enter your password: ", resolve)
+                ),
+            phoneCode: async () =>
+                new Promise((resolve) =>
+                    rl.question("Please enter the code you received: ", resolve)
+                ),
+            onError: (err) => console.log(err),
+        });
 
-        if (session.authKey && session.authKey.getKey()) {
-            console.log("[Telegram] Sessão existente encontrada. Tentando conectar...");
-            await this.client.connect();
-        } else {
-            console.log("[Telegram] Nenhuma sessão encontrada. Iniciando autenticação...");
-            await this.client.start({
-                phoneNumber: async () =>
-                    new Promise((resolve) =>
-                        rl.question("Please enter your number: ", resolve)
-                    ),
-                password: async () =>
-                    new Promise((resolve) =>
-                        rl.question("Please enter your password: ", resolve)
-                    ),
-                phoneCode: async () =>
-                    new Promise((resolve) =>
-                        rl.question("Please enter the code you received: ", resolve)
-                    ),
-                onError: (err) => console.log(err),
-            });
-
-            this.client.session.save()
-        }
-
-        if (this.client.connected) {
-            console.log("[Telegram] Você está conectado!");
-        }
-
-        this.client.addEventHandler(this.ListenMessages, new NewMessage({}))
+        this.client.session.save()
+        console.log(this.client.session.save());
     }
 
-    public static async ListenMessages(event:NewMessageEvent) {
+    public static async ListenMessages(event: NewMessageEvent) {
         const originalMethod = TelegramServer.literalRoutes[event.chatId!.toString()]
 
         if (originalMethod) {
@@ -74,7 +62,7 @@ export class TelegramServer {
 
     public static ReceiveMessage(chatId: number) {
         return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-            TelegramServer.literalRoutes[chatId] = {functionName:propertyKey, method: descriptor.value}
+            TelegramServer.literalRoutes[chatId] = {functionName: propertyKey, method: descriptor.value}
         }
     }
 
