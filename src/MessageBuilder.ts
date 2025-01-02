@@ -1,33 +1,35 @@
+import {StringUtils} from "./utils/StringUtils";
+
 interface IHeader {
-    chain:string
-    block:{
-        blockNumber:number
-        gasUsed:number,
-        gwei:number
-    }
-    token:{
-        name:string,
-        symbol:string
-    }
+    name:string,
+    symbol:string,
+    contract:string,
+    dev:string,
+    age:string,
+    cex:string | null,
+    totalSupply:number,
+    decimals:number,
+    balance:string
 }
 
 interface IMiddle {
-    caller:string
-    tokenAddress:string
+    bytecode:string | null
+    functions:any
 }
 
 interface IFooter {
-    // maxTx:string | number,
-    // maxWallet:string | number
-    // transferDelay: "ON" | "OFF"
+    buyTax:number | null,
+    sellTax:number | null,
+    transferTax:number | null,
+    buyGas:number | null,
+    sellGas:number | null,
+    maxTx:number | null,
 }
 
 export class MessageBuilder {
     header!:IHeader;
     footer!:IFooter;
     middle!:IMiddle;
-    scan = "https://etherscan.io/"
-    dexScreneer = "https://dexscreener.com/ethereum/"
 
     setHeader(header:Partial<IHeader>){
         this.header = {...this.header, ...header}
@@ -42,56 +44,64 @@ export class MessageBuilder {
     }
 
     getMessage(){
-        // let message = `===================\n<header/><middle/><footer/>\n===================`
-        //
-        // if(this.header){
-        //     const headerFormat = this.formatHeader()
-        //     message = message.replace("<header/>",`${headerFormat}`)
-        // }
-        //
-        // if(this.middle){
-        //     const middleFormat = this.formatMiddle()
-        //     message = message.replace("<middle/>",`${middleFormat}`)
-        // }
-        //
-        // if(this.footer){
-        //     const footerFormat = this.formatFooter()
-        //     message = message.replace("<footer/>",`${footerFormat}`)
-        // }
-        //
-        // return message.replaceAll(/<[^>]*\/>/g,"");
-        return ""
+        let message = `\n<header/>\n<middle/>\n<footer/>\n`
+
+        if(this.header){
+            const headerFormat = this.formatHeader()
+            message = message.replace("<header/>",`${headerFormat}`)
+        }
+
+        if(this.middle){
+            const middleFormat = this.formatMiddle()
+            message = message.replace("<middle/>",`${middleFormat}`)
+        }
+
+        if(this.footer){
+            const footerFormat = this.formatFooter()
+            message = message.replace("<footer/>",`${footerFormat}`)
+        }
+
+        return message.replaceAll(/<[^>]*\/>/g,"");
     }
 
     formatHeader(){
-        // let header = ""
-        //
-        // header += `Chain: *${this.header.chain.toUpperCase()}*\n`
-        // header += `Block: [${this.header.block.blockNumber}](${this.scan}txs?block=${this.header.block.blockNumber}) | Gas used: *${this.header.block.gasUsed.toFixed(2)}%* | Gwei: *${this.header.block.gwei}*\n`
-        // header += `Token: *${this.header.token.name}* | $${this.header.token.symbol}\n\n`
-        //
-        // return header;
+        let header = ""
+
+        header += `Name: *${this.header.name}* | Symbol: *${this.header.symbol}*\n`
+        header += `Contract: *${this.header.contract}*\n`
+        header += `Dev: *${this.header.dev}*\n`
+        header += `└ Age: *${this.header.age}*\n`
+
+        this.header.cex && (
+            header += `└ From CEX: ${this.header.cex}\n`
+        )
+
+        header += `└ Balance: *${this.header.balance} ETH*\n`
+        header += `Total Supply: *${this.header.totalSupply.toLocaleString("pt-BR")}*\n`
+        header += `Decimals: ${this.header.decimals}\n`
+
+        return StringUtils.escapeMarkdown(header);
     }
 
     formatMiddle(){
-        // let middle = ""
+        let middle = ""
         // let directArrow = `[➥](${this.scan}token/${this.middle.tokenAddress})`
         // let directDexScreener = `[📉](${this.dexScreneer}${this.middle.tokenAddress})`
         //
         // middle += `Label: _${this.middle.caller}_\n`
         // middle += directArrow + "`" + this.middle.tokenAddress + "`" + directDexScreener + "\n"
         //
-        // return middle;
+        return middle;
     }
 
     formatFooter(){
-        // let footer = ""
+        let footer = ""
         //
         // if(this.footer.transferDelay) footer += `\nTransfer Delay: *${this.footer.transferDelay}*`
         // if(this.footer.maxTx) footer += `\nMax Tx: *${this.footer.maxTx}*`;
         // if(this.footer.maxWallet) footer += `\nMax Wallet: *${this.footer.maxWallet}*`
         //
-        // return footer;
+        return footer;
     }
 
 }
