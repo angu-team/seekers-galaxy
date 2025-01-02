@@ -1,5 +1,5 @@
-import {TelebotRouter3} from "../TelebotRouter3";
 import {MessageBuilder} from "../MessageBuilder";
+import {TelebotServer} from "../controllers/TelebotServer";
 
 export class  TelebotRepository {
     cacheMessage:{[reference:string]:{messageId:number, messageBuilder:MessageBuilder}} = {}
@@ -7,7 +7,7 @@ export class  TelebotRepository {
     sendMessage(userId:number,message:MessageBuilder,reference:string){
         this.cacheMessage[reference] = {messageId:0, messageBuilder:message}
 
-        TelebotRouter3.client.sendMessage(userId, message.getMessage(), {
+        TelebotServer.client.sendMessage(userId, message.getMessage(), {
             parseMode: "MarkdownV2",
             webPreview: false,
         }).then((message) => {
@@ -21,7 +21,7 @@ export class  TelebotRepository {
 
         if(currentMessage === newMessage) return false
 
-        TelebotRouter3.client.editMessageText({chatId:userId,messageId:this.cacheMessage[reference].messageId,}, message.getMessage(), {
+        TelebotServer.client.editMessageText({chatId:userId,messageId:this.cacheMessage[reference].messageId,}, message.getMessage(), {
             parseMode: "MarkdownV2",
             webPreview: false,
         } as any).then((message) => {

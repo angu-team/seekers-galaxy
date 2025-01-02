@@ -1,5 +1,5 @@
 import telebot from "telebot";
-import {StringUtils} from "./utils/StringUtils";
+import {StringUtils} from "../utils/StringUtils";
 
 type UserMessage = {
     text: any,
@@ -13,7 +13,7 @@ type UserMessage = {
     message:any;
 }
 
-export class TelebotRouter3 {
+export class TelebotServer {
     private static literalRoutes: { [funcName: string]: { method: any, message: string | RegExp } } = {}
     private static patternRoutes: { [funcName: string]: { method: any, message: string | RegExp } } = {}
     private static bodyReg = /^\/(\w+)(?:\s+((?:\S+\s+)*\S+))?$/gm;
@@ -28,16 +28,16 @@ export class TelebotRouter3 {
             },
         });
 
-        TelebotRouter3.client.start()
+        TelebotServer.client.start()
 
-        TelebotRouter3.ListenMessages()
-        TelebotRouter3.ListenButtons()
+        TelebotServer.ListenMessages()
+        TelebotServer.ListenButtons()
 
     }
 
     public static ListenButtons() {
-        TelebotRouter3.client.on(`callbackQuery`, async (msg: UserMessage & { data: string }, props: any) => {
-            const originalMethod = TelebotRouter3.findMethod("/" + msg.data)
+        TelebotServer.client.on(`callbackQuery`, async (msg: UserMessage & { data: string }, props: any) => {
+            const originalMethod = TelebotServer.findMethod("/" + msg.data)
             // console.log(originalMethod.command)
             if (originalMethod.method) {
 
@@ -56,10 +56,10 @@ export class TelebotRouter3 {
 
             switch (mode) {
                 case "literal":
-                    TelebotRouter3.literalRoutes[propertyKey] = {message, method: descriptor.value}
+                    TelebotServer.literalRoutes[propertyKey] = {message, method: descriptor.value}
                     break;
                 case "pattern":
-                    TelebotRouter3.patternRoutes[propertyKey] = {message, method: descriptor.value}
+                    TelebotServer.patternRoutes[propertyKey] = {message, method: descriptor.value}
                     break
             }
 
@@ -71,8 +71,8 @@ export class TelebotRouter3 {
             ["/config","/restart","/commands"],
         ], {resize: true, one_time_keyboard: false});
 
-        TelebotRouter3.client.on(`/init`, async (msg: UserMessage, props: any) => {
-            const loading_message = await TelebotRouter3.client.sendMessage(
+        TelebotServer.client.on(`/init`, async (msg: UserMessage, props: any) => {
+            const loading_message = await TelebotServer.client.sendMessage(
                 msg.chat.id, "👍🏻🫡", {replyToMessage: msg.message_id,replyMarkup:helpButtons}
             ).catch((e) => {
                 throw e;
@@ -80,13 +80,13 @@ export class TelebotRouter3 {
 
         })
 
-        TelebotRouter3.client.on(`text`, async (msg: UserMessage, props: any) => {
+        TelebotServer.client.on(`text`, async (msg: UserMessage, props: any) => {
 
-            const originalMethod = TelebotRouter3.findMethod(msg.text)
+            const originalMethod = TelebotServer.findMethod(msg.text)
             if (originalMethod.method) {
                 let response: any = {};
 
-                const loading_message = await TelebotRouter3.client.sendMessage(
+                const loading_message = await TelebotServer.client.sendMessage(
                     msg.chat.id, "Aguarde ...", {replyToMessage: msg.message_id}
                 ).catch((e) => {
                     throw e;
@@ -99,14 +99,14 @@ export class TelebotRouter3 {
                 }
 
                 if(response?.message){
-                    await TelebotRouter3.senderMessageControl(response.message, msg.text, msg.chat.id, {
+                    await TelebotServer.senderMessageControl(response.message, msg.text, msg.chat.id, {
                         chatId: loading_message.chat.id,
                         messageId: loading_message.message_id
                     })
                     return response;
                 }
 
-                await TelebotRouter3.client.editMessageText({
+                await TelebotServer.client.editMessageText({
                         chatId: loading_message.chat.id,
                         messageId: loading_message.message_id,
                     },
@@ -119,17 +119,17 @@ export class TelebotRouter3 {
     }
 
     private static findMethod(text: string) {
-        const literalRouteNames = Object.keys(TelebotRouter3.literalRoutes)
-        const patternRouteNames = Object.keys(TelebotRouter3.patternRoutes)
+        const literalRouteNames = Object.keys(TelebotServer.literalRoutes)
+        const patternRouteNames = Object.keys(TelebotServer.patternRoutes)
         let targetMethod: { method: any, command: string, args: string } = {args: "", command: "", method: null}
         literalRouteNames.find(routeName => {
-            const message = TelebotRouter3.literalRoutes[routeName].message as string;
-            const match = [...text.matchAll(TelebotRouter3.bodyReg)];
+            const message = TelebotServer.literalRoutes[routeName].message as string;
+            const match = [...text.matchAll(TelebotServer.bodyReg)];
 
             if (match.length > 0) {
-                const [, command, args] = [...text.matchAll(TelebotRouter3.bodyReg)][0];
+                const [, command, args] = [...text.matchAll(TelebotServer.bodyReg)][0];
                 if (command === message) {
-                    targetMethod = {method: TelebotRouter3.literalRoutes[routeName].method, args, command}
+                    targetMethod = {method: TelebotServer.literalRoutes[routeName].method, args, command}
                 }
             }
 
@@ -137,12 +137,12 @@ export class TelebotRouter3 {
 
         if (targetMethod.method) return targetMethod;
         patternRouteNames.find(routeName => {
-            const message = TelebotRouter3.patternRoutes[routeName].message as RegExp
+            const message = TelebotServer.patternRoutes[routeName].message as RegExp
 
             if (text.match(message)) {
                 // @ts-ignore
                 const [, command, args] = [...text.matchAll(message)][0];
-                targetMethod = {method: TelebotRouter3.patternRoutes[routeName].method, args, command}
+                targetMethod = {method: TelebotServer.patternRoutes[routeName].method, args, command}
             }
 
         })
@@ -156,13 +156,13 @@ export class TelebotRouter3 {
     }) {
 
         if (messageResponse.length > 4096) {
-            await TelebotRouter3.client.deleteMessage(loadingMessage.chatId, loadingMessage.messageId).catch((e) => {
+            await TelebotServer.client.deleteMessage(loadingMessage.chatId, loadingMessage.messageId).catch((e) => {
                 throw e;
             })
 
             for (let i = 0; i < messageResponse.length; i += 4096) {
                 const chunk = messageResponse.slice(i, i + 4096);
-                TelebotRouter3.client.sendMessage(loadingMessage.chatId, chunk, {
+                TelebotServer.client.sendMessage(loadingMessage.chatId, chunk, {
                     parseMode: "Markdown",
                     webPreview: false
                 }).catch((e) => {
@@ -170,7 +170,7 @@ export class TelebotRouter3 {
                 })
             }
         } else {
-            TelebotRouter3.client.editMessageText({
+            TelebotServer.client.editMessageText({
                     chatId: loadingMessage.chatId,
                     messageId: loadingMessage.messageId,
                 },

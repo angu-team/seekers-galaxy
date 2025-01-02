@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 
 type methods = "get" | "post" | "put" | "delete"
 
-export class Router {
+export class ExpressServer {
 
     private static express: Express = express()
         .use(morgan(this.logRequest))
@@ -18,7 +18,7 @@ export class Router {
             return JSON.stringify(req.body)
         })
 
-        Router.express.listen(PORT, () => {
+        ExpressServer.express.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`)
         })
             .on("error", (e) => {
@@ -38,7 +38,7 @@ export class Router {
             descriptor.value = async function (req: Request) {
                 return await originalMethod.call(this, req);
             };
-            Router.express[method](`/${endpoint}`, async function (req, res) {
+            ExpressServer.express[method](`/${endpoint}`, async function (req, res) {
                 const serviceResponse = await descriptor.value(req)
 
                 if (serviceResponse instanceof Error) {
