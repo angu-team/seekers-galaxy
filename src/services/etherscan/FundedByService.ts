@@ -13,8 +13,9 @@ export class FundedByService {
 
         const from = firstTransaction.result[0].from
         const value = firstTransaction.result[0].value
+        const timestamp = firstTransaction.result[0].timeStamp
 
-        return {from,value}
+        return {from,value,timestamp}
     }
 
 }
