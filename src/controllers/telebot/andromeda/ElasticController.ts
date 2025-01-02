@@ -1,5 +1,5 @@
-import {ElasticRepository} from "../../repositories/andromeda/ElasticRepository";
-import {TelebotRouter3} from "../../TelebotRouter3";
+import {ElasticRepository} from "../../../repositories/andromeda/ElasticRepository";
+import {TelebotRouter3} from "../../../TelebotRouter3";
 
 export class ElasticController {
     private static repository: ElasticRepository;
