@@ -2,32 +2,65 @@ import {CallBasicInfoTokenService} from "../../andromeda/ethers/CallBasicInfoTok
 import {FundedByService} from "../../etherscan/FundedByService";
 import {ElasticRepository} from "../../../repositories/andromeda/ElasticRepository";
 import {EthersRepository} from "../../../repositories/andromeda/EthersRepository";
-import {TransactionReceipt} from "ethers";
+import {ethers, TransactionReceipt} from "ethers";
+import {TelebotRepository} from "../../../repositories/TelebotRepository";
+import {MessageBuilder} from "../../../MessageBuilder";
+import {DateUtils} from "../../../utils/DateUtils";
 
 export class ListenDeployErc20Handler {
 
     transferSignature = "Transfer(address,address,uint256)";
 
     constructor(
-        private callBasicInfoTokenService:CallBasicInfoTokenService,
-        private fundedByService:FundedByService,
-        private elasticRepository:ElasticRepository,
-        private ethersRepository:EthersRepository,
-    ) {}
-
-    validateAddress(address:string | null){
-        if(!address) throw new Error("Invalid address");
+        private callBasicInfoTokenService: CallBasicInfoTokenService,
+        private fundedByService: FundedByService,
+        private elasticRepository: ElasticRepository,
+        private ethersRepository: EthersRepository,
+        private telebotRepository: TelebotRepository,
+    ) {
     }
 
-    async listenDeployErc20Handler(userId:number,transaction:TransactionReceipt[]){
+    async handle(userId: number, transaction: TransactionReceipt[]) {
         transaction.map(async (transaction) => {
-            const basicInfoToken = await this.callBasicInfoTokenService.exec(666,transaction.contractAddress!)
+            const basicInfoToken = await this.callBasicInfoTokenService.exec(797182203, transaction.contractAddress!)
 
-            const dev_fundedBy = await this.fundedByService.exec(transaction.from);
-            const labelToFundedBy = await this.elasticRepository.getLabelByAddress(dev_fundedBy.from)
+            const devInfo = await this.getDevInfo(transaction.from);
+            const messageBuilder = this.buildMessage(transaction, basicInfoToken, devInfo);
 
-            await this.ethersRepository.listenContractEvents(666,"http://localhost:8081/",transaction.contractAddress!,this.transferSignature)// console.log(basicInfoToken);
+            this.telebotRepository.sendMessage(userId, messageBuilder, transaction.contractAddress!);
+            await this.ethersRepository.listenContractEvents(797182203,"http://localhost:8081/",transaction.contractAddress!,this.transferSignature)// console.log(basicInfoToken);
         })
-
     }
+
+    private buildMessage(transaction: TransactionReceipt, basicInfoToken: any, devInfo: any) {
+        const messageBuilder = new MessageBuilder();
+
+        messageBuilder.setHeader({
+            name: basicInfoToken.name,
+            symbol: basicInfoToken.symbol,
+            decimals: basicInfoToken.decimals,
+            totalSupply: Number(
+                ethers.formatUnits(basicInfoToken.totalSupply, Number(basicInfoToken.decimals))
+            ),
+            dev: transaction.from,
+            cex: devInfo.label,
+            contract: transaction.contractAddress!,
+            age: DateUtils.formatTimestamp(devInfo.fundedBy.timestamp),
+            balance: ethers.formatEther(devInfo.fundedBy.value),
+        });
+
+        return messageBuilder
+    }
+
+    private async getDevInfo(devAddress: string) {
+        const fundedBy = await this.fundedByService.exec(devAddress);
+        const labelToFundedBy = await this.elasticRepository.getLabelByAddress(fundedBy.from);
+
+        return {
+            address: devAddress,
+            fundedBy,
+            label: labelToFundedBy.label,
+        };
+    }
+
 }
