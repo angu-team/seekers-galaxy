@@ -10,7 +10,7 @@ export class ContractRepository {
     sourceCodeCache:{[address:string]:IResponse} = {};
     abiCache:{[address:string]:IResponse} = {};
 
-    private readonly etherscanUrl = 'https://api.etherscan.io/api?module=contract&action=getabi&address=';
+    private readonly etherscanUrl = 'https://api.etherscan.io/api?module=contract'
 
     async getAbi(address: string):Promise<IResponse> {
         const key = "GRUWG9C4TQCE4VY4PJRJUSKQR9SWAH73E2"
