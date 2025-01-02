@@ -23,7 +23,7 @@ export class StringUtils {
     }
 
     public static escapeMarkdown(text: string) {
-        const escapeChars = '_*[]()~`>#+-=|{}.!';
+        const escapeChars = '_[]()~`>#+-=|{}.!';
         let escapedText = '';
         for (let char of text) {
             if (escapeChars.includes(char)) {
