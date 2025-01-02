@@ -43,8 +43,9 @@ export class TelegramServer {
             onError: (err) => console.log(err),
         });
 
-        this.client.session.save()
+
         console.log(this.client.session.save());
+        this.client.addEventHandler(this.ListenMessages, new NewMessage({}))
     }
 
     public static async ListenMessages(event: NewMessageEvent) {

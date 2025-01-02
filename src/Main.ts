@@ -1,29 +1,57 @@
 import {EthersRepository} from "./repositories/andromeda/EthersRepository";
 import dotenv from "dotenv"
-import {EthersController} from "./controllers/andromeda/ethers/EthersController";
-import {TelebotRouter3} from "./TelebotRouter3";
-import {Router} from "./Router";
+import {EthersController} from "./controllers/telebot/andromeda/EthersController";
+import {TelebotServer} from "./controllers/TelebotServer";
+import {ExpressServer} from "./controllers/ExpressServer";
 import {AxiosClient} from "./AxiosClient";
-import {EthersWebhook} from "./controllers/andromeda/ethers/EthersWebhook";
+import {EthersWebhook} from "./controllers/express/andromeda/EthersWebhook";
 import {ElasticRepository} from "./repositories/andromeda/ElasticRepository";
-import {ElasticController} from "./controllers/andromeda/ElasticController";
-import {EtherscanController} from "./controllers/andromeda/EtherscanController";
+import {ElasticController} from "./controllers/telebot/andromeda/ElasticController";
+import {EtherscanController} from "./controllers/telebot/andromeda/EtherscanController";
 import {AccountRepository} from "./repositories/etherscan/AccountRepository";
+import {CallBasicInfoTokenService} from "./services/andromeda/ethers/CallBasicInfoTokenService";
+import {FundedByService} from "./services/etherscan/FundedByService";
+import {ListenDeployErc20Handler} from "./services/bot/handlers/ListenDeployErc20Handler";
+import {TelebotRepository} from "./repositories/TelebotRepository";
+import {TelegramServer} from "./controllers/TelegramServer";
+import {TEst} from "./controllers/telegram/TEst";
+import {MugetsoCommandSequenceFeedService} from "./services/bot/MugetsoCommandSequenceFeedService";
+import {FeedTest} from "./controllers/telebot/FeedTest";
+
 dotenv.config()
 
 const ethersRepository = new EthersRepository(process.env.ANDROMEDA_URL!);
 const elasticRepository = new ElasticRepository(process.env.ANDROMEDA_URL!);
 const accountRepository = new AccountRepository();
+const telebotRepository = new TelebotRepository();
 
-(() => {
-    AxiosClient.initLogger();
+const callBasicInfoTokenService = new CallBasicInfoTokenService(ethersRepository);
+const fundedByService = new FundedByService(accountRepository);
 
-    new EthersController(ethersRepository);
-    new EthersWebhook(ethersRepository);
+// const listenDeployErc20Handler = new ListenDeployErc20Handler(callBasicInfoTokenService,fundedByService,elasticRepository,ethersRepository,telebotRepository);
+const service = new MugetsoCommandSequenceFeedService();
+(async () => {
+    new TEst();
+    new FeedTest(service);
 
-    new ElasticController(elasticRepository);
-    new EtherscanController(accountRepository);
+    await TelegramServer.initialize({
+        apiHash:"eb768636de3838117502e23c5dcc1edc",
+        apiId:18902709,
+        session:process.env.TELEGRAM_SESSION || ""
+    })
 
-    TelebotRouter3.initialize(process.env.TELEBOT_TOKEN!)
-    Router.initialize()
+    // AxiosClient.initLogger();
+    //
+    // // await ethersRepository.applyRpc(797182203,"ws://168.119.138.20:38546")
+    // await ethersRepository.applyRpc(797182203,"ws://49.12.84.33:8546")
+    // await ethersRepository.listenDeployErc20(797182203,"http://localhost:8081/");
+    //
+    // new EthersController(ethersRepository);
+    // new EthersWebhook(listenDeployErc20Handler);
+    //
+    // new ElasticController(elasticRepository);
+    // new EtherscanController(accountRepository);
+    //
+    TelebotServer.initialize(process.env.TELEBOT_TOKEN!)
+    // ExpressServer.initialize()
 })()
