@@ -1,27 +1,31 @@
+import {MessageBuilder} from "../MessageBuilder";
 import {TelebotServer} from "../controllers/TelebotServer";
 
 export class  TelebotRepository {
-    cacheMessage:{[reference:string]:{messageId:number, messageText:string}} = {}
+    cacheMessage:{[reference:string]:{messageId:number, messageBuilder:MessageBuilder}} = {}
 
-    async sendMessage(userId:number,message:string,reference:string){
+    sendMessage(userId:number,message:MessageBuilder,reference:string){
+        this.cacheMessage[reference] = {messageId:0, messageBuilder:message}
 
-        return TelebotServer.client.sendMessage(userId, message, {
+        TelebotServer.client.sendMessage(userId, message.getMessage(), {
             parseMode: "MarkdownV2",
             webPreview: false,
         }).then((message) => {
             this.cacheMessage[reference].messageId = message.message_id
-            this.cacheMessage[reference].messageText = message
         }).catch(console.log)
     }
 
-    async updateMessage(userId:number,message:string,reference:string){
-        if(this.cacheMessage[reference].messageText == message) return false
+    updateMessage(userId:number,message:MessageBuilder,reference:string){
+        const currentMessage = this.cacheMessage[reference].messageBuilder.getMessage();
+        const newMessage = message.getMessage();
 
-        return TelebotServer.client.editMessageText({chatId:userId,messageId:this.cacheMessage[reference].messageId,}, message, {
+        if(currentMessage === newMessage) return false
+
+        TelebotServer.client.editMessageText({chatId:userId,messageId:this.cacheMessage[reference].messageId,}, message.getMessage(), {
             parseMode: "MarkdownV2",
             webPreview: false,
         } as any).then((message) => {
-            this.cacheMessage[reference].messageText = message
+            this.cacheMessage[reference].messageBuilder = message
         }).catch(console.log)
     }
 
