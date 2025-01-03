@@ -15,7 +15,9 @@ export class HoneypotIsService {
     constructor(private repository:HoneyPotIsRepository) {}
 
     async simulation(address:string){
-        const response:ISimulationResponse = await this.repository.get(address);
+        const response:ISimulationResponse = await this.repository.get(address).catch(() => false);
+        if(!response) return false;
+
         return response.simulationSuccess ? response.simulationResult : false;
     }
 
