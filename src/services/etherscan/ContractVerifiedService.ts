@@ -1,5 +1,4 @@
-import {ContractRepository as EtherscanContractRepository} from "../../repositories/etherscan/ContractRepository" ;
-import {ContractRepository as BasescanContractRepository} from "../../repositories/basescan/ContractRepository" ;
+import {EtherscanRepository} from "../../repositories/EtherscanRepository";
 
 interface IResponse {
     verified:boolean,
@@ -7,10 +6,10 @@ interface IResponse {
 }
 
 export class ContractVerifiedService {
-    constructor(private contractRepository:EtherscanContractRepository | BasescanContractRepository) {
+    constructor(private contractRepository:EtherscanRepository) {
     }
 
-    async exec(address:string){
+    async exec(address:string):Promise<IResponse>{
         const getSourceCode = await this.contractRepository.getSourceCode(address)
         const verified = getSourceCode.result[0].ABI !== 'Contract source code not verified'
 

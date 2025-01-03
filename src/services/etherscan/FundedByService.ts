@@ -1,9 +1,9 @@
-import {AccountRepository as EtherscanAccountRepository} from "../../repositories/etherscan/AccountRepository";
-import {AccountRepository as BasescanAccountRepository} from "../../repositories/basescan/AccountRepository";
 
 //TODO analisar quando a API da limit
+import {EtherscanRepository} from "../../repositories/EtherscanRepository";
+
 export class FundedByService {
-    constructor(private accountRepository: EtherscanAccountRepository | BasescanAccountRepository ) {
+    constructor(private accountRepository: EtherscanRepository) {
     }
 
     async exec(address: string) {
