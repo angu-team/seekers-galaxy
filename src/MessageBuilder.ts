@@ -5,11 +5,11 @@ interface IHeader {
     symbol:string,
     contract:string,
     dev:string,
-    age:string,
+    age:string | null,
     cex:string | null,
     totalSupply:number,
     decimals:number,
-    balance:string
+    balance:string | null
 }
 
 interface IMiddle {
@@ -72,13 +72,16 @@ export class MessageBuilder {
         header += `Name: *${this.header.name}* | Symbol: *${this.header.symbol}*\n`
         header += `Contract: *${this.header.contract}*\n`
         header += `Dev: *${this.header.dev}*\n`
-        header += `└ Age: *${this.header.age}*\n`
 
-        this.header.cex && (
-            header += `└ From CEX: ${this.header.cex}\n`
-        )
-        const formatBalance = Number(this.header.balance)
-        header += `└ Balance: *${formatBalance.toFixed(4)} ETH*\n`
+        if(this.header.age) {
+            header += `└ Age: *${this.header.age}*\n`
+
+            this.header.cex && (
+                header += `└ From CEX: ${this.header.cex}\n`
+            )
+            const formatBalance = Number(this.header.balance)
+            header += `└ Balance: *${formatBalance.toFixed(4)} ETH*\n`
+        }
 
         header += `Total Supply: *${this.header.totalSupply.toLocaleString("pt-BR")}*\n`
         header += `Decimals: ${this.header.decimals}`
