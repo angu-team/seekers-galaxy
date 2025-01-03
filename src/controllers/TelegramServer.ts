@@ -53,7 +53,7 @@ export class TelegramServer {
 
         if (originalMethod) {
             try {
-                await originalMethod.method.call(null, event.message.message)
+                await originalMethod.method.call(null, event.message.id,event.message.message)
             } catch (e) {
                 console.log(e)
             }

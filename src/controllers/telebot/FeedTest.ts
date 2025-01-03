@@ -9,9 +9,9 @@ export class FeedTest {
         FeedTest.commandSequenceFeedService = commandSequenceFeedService;
     }
 
-    @TelebotServer.ReceiveMessage("feed", "literal")
+    @TelebotServer.ReceiveMessage(/^\/(site|coin|twitter)\s+(.+)$/g, "pattern")
     public static async feed(chatId: number, command: string, args: string, nameOrChat: string, messageId: number, text: string) {
-        FeedTest.commandSequenceFeedService.exec(93372553)
+        return FeedTest.commandSequenceFeedService.sendCommands(command,args)
         // return {message: "Feed"}
     }
 }
