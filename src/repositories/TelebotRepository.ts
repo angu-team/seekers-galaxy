@@ -20,13 +20,12 @@ export class  TelebotRepository {
         const newMessage = message.getMessage();
 
         if(currentMessage === newMessage) return false
+        this.cacheMessage[reference].messageBuilder = message
 
         TelebotServer.client.editMessageText({chatId:userId,messageId:this.cacheMessage[reference].messageId,}, message.getMessage(), {
             parseMode: "MarkdownV2",
             webPreview: false,
-        } as any).then((message) => {
-            this.cacheMessage[reference].messageBuilder = message
-        }).catch(console.log)
+        } as any).catch(console.log)
     }
 
 }
