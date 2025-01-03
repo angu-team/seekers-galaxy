@@ -98,7 +98,6 @@ export class EtherscanRepository {
         {key: 'M4X5S8W419727AVR1BTG468ZEJQZQN93SH', disponibility: 0,networkId:84531},
     ]
     sourceCodeCache:{[address:string]:IResponse} = {};
-    private readonly etherscanUrl = 'https://api.etherscan.io/api';
 
     private readonly urls:{[networkId:number]:string} = {
         1: 'https://api.etherscan.io/api',
@@ -113,11 +112,11 @@ export class EtherscanRepository {
         disponibilitykey.disponibility =Date.now() + (seconds * 1000)
     }
 
-    async getDisponibleEtherscanKey(networkId:number = 1){
+    async getDisponibleEtherscanKey(){
         const now = Date.now()
 
         while(true){
-            const disponibilitykey = this.ETHERSCAN_KEYS.find(item => item.disponibility <= now && item.networkId === networkId);
+            const disponibilitykey = this.ETHERSCAN_KEYS.find(item => item.disponibility <= now && item.networkId === this.networkId);
 
             if(disponibilitykey) {
                 return disponibilitykey.key
