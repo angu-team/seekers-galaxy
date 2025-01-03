@@ -113,9 +113,9 @@ export class EtherscanRepository {
     }
 
     async getDisponibleEtherscanKey(){
-        const now = Date.now()
 
         while(true){
+            const now = Date.now()
             const disponibilitykey = this.ETHERSCAN_KEYS.find(item => item.disponibility <= now && item.networkId === this.networkId);
 
             if(disponibilitykey) {
