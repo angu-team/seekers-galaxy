@@ -44,10 +44,10 @@ export class ListenDeployErc20Handler {
                 ethers.formatUnits(basicInfoToken.totalSupply, Number(basicInfoToken.decimals))
             ),
             dev: transaction.from,
-            cex: devInfo.label,
+            cex: devInfo ? devInfo.label : "Unknown",
             contract: transaction.contractAddress!,
-            age: DateUtils.formatTimestamp(devInfo.fundedBy.timestamp),
-            balance: ethers.formatEther(devInfo.fundedBy.value),
+            age: devInfo ? DateUtils.formatTimestamp(devInfo.fundedBy.timestamp) : null,
+            balance: devInfo ? ethers.formatEther(devInfo.fundedBy.value) : null,
         });
 
         return messageBuilder
@@ -55,6 +55,7 @@ export class ListenDeployErc20Handler {
 
     private async getDevInfo(devAddress: string) {
         const fundedBy = await this.fundedByService.exec(devAddress);
+        if(!fundedBy) return false;
 
         const labelToFundedBy = await this.elasticRepository.getLabelByAddress(fundedBy.from).catch(() => {});
 
