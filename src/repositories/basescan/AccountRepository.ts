@@ -15,7 +15,7 @@ interface IResponse {
 }
 
 export class AccountRepository {
-    private readonly basescanUrl = 'https://api.basescan.io/api?module=account';
+    private readonly basescanUrl = 'https://api.basescan.org/api?module=account';
 
     txList(address:string,params?:IParams):Promise<IResponse>{
         const key = "IQWWI8UQT25ZJTV67VH2MAAVFK2R126P6A"
