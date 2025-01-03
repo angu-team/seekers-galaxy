@@ -28,10 +28,9 @@ const telebotRepository = new TelebotRepository();
 const callBasicInfoTokenService = new CallBasicInfoTokenService(ethersRepository);
 const fundedByService = new FundedByService(accountRepository);
 
-// const listenDeployErc20Handler = new ListenDeployErc20Handler(callBasicInfoTokenService,fundedByService,elasticRepository,ethersRepository,telebotRepository);
 const service = new MugetsoCommandSequenceFeedService();
 (async () => {
-    new TEst();
+    new TEst(service);
     new FeedTest(service);
 
     await TelegramServer.initialize({
