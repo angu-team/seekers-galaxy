@@ -13,9 +13,12 @@ export class FundedByService {
             sort: 'asc'
         })
 
-        const from = firstTransaction.result[0].from
-        const value = firstTransaction.result[0].value
-        const timestamp = firstTransaction.result[0].timeStamp
+        const transaction = firstTransaction.result[0]
+        if(!transaction) return false;
+
+        const from = transaction.from
+        const value = transaction.value
+        const timestamp = transaction.timeStamp
 
         return {from,value,timestamp}
     }
