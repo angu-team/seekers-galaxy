@@ -18,12 +18,14 @@ interface IMiddle {
 }
 
 interface IFooter {
-    buyTax:number | null,
-    sellTax:number | null,
-    transferTax:number | null,
-    buyGas:number | null,
-    sellGas:number | null,
-    maxTx:number | null,
+    buyTax:number ,
+    sellTax:number ,
+    transferTax:number ,
+    buyGas:number ,
+    sellGas:number,
+    maxBuy:number,
+    verified:boolean,
+    verfiedVersion:string,
 }
 
 export class MessageBuilder {
@@ -75,10 +77,11 @@ export class MessageBuilder {
         this.header.cex && (
             header += `└ From CEX: ${this.header.cex}\n`
         )
+        const formatBalance = Number(this.header.balance)
+        header += `└ Balance: *${formatBalance.toFixed(4)} ETH*\n`
 
-        header += `└ Balance: *${this.header.balance} ETH*\n`
         header += `Total Supply: *${this.header.totalSupply.toLocaleString("pt-BR")}*\n`
-        header += `Decimals: ${this.header.decimals}\n`
+        header += `Decimals: ${this.header.decimals}`
 
         return StringUtils.escapeMarkdown(header);
     }
@@ -95,13 +98,20 @@ export class MessageBuilder {
     }
 
     formatFooter(){
-        let footer = ""
-        //
-        // if(this.footer.transferDelay) footer += `\nTransfer Delay: *${this.footer.transferDelay}*`
-        // if(this.footer.maxTx) footer += `\nMax Tx: *${this.footer.maxTx}*`;
-        // if(this.footer.maxWallet) footer += `\nMax Wallet: *${this.footer.maxWallet}*`
-        //
-        return footer;
+        let footer = "Tax:\n"
+
+        footer += `└ Buy Tax: *${this.footer.buyTax.toFixed(2)}*% | Sell tax: *${this.footer.sellTax.toFixed(2)}*%\n`
+        footer += `└ Transfer tax: *${this.footer.transferTax.toFixed(2)}*%\n`
+        footer += `└ Buy Gas: #G_${this.footer.buyGas} | Sell Gas: #G_${this.footer.sellGas}\n`
+        footer += `└ Max buy: *${this.footer.maxBuy}*\n`
+
+        if(this.footer.verified){
+            footer += `📄 Source Code Verified: ✅ *${this.footer.verfiedVersion}*\n`
+        } else {
+            footer += `📄 Source Code Verified: ✖\n`
+        }
+
+        return StringUtils.escapeMarkdown(footer);
     }
 
 }
