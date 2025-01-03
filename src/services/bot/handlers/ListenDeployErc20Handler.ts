@@ -6,6 +6,7 @@ import {ethers, TransactionReceipt} from "ethers";
 import {TelebotRepository} from "../../../repositories/TelebotRepository";
 import {MessageBuilder} from "../../../MessageBuilder";
 import {DateUtils} from "../../../utils/DateUtils";
+import {ByteUtils} from "../../../utils/ByteUtils";
 
 export class ListenDeployErc20Handler {
 
@@ -36,19 +37,37 @@ export class ListenDeployErc20Handler {
     private buildMessage(transaction: TransactionReceipt, basicInfoToken: any, devInfo: any) {
         const messageBuilder = new MessageBuilder();
 
+        // messageBuilder.setHeader({
+        //     name: basicInfoToken.name,
+        //     symbol: basicInfoToken.symbol,
+        //     decimals: basicInfoToken.decimals,
+        //     totalSupply: Number(
+        //         ethers.formatUnits(basicInfoToken.totalSupply, Number(basicInfoToken.decimals))
+        //     ),
+        //     dev: transaction.from,
+        //     cex: devInfo ? devInfo.label : "Unknown",
+        //     contract: transaction.contractAddress!,
+        //     age: devInfo ? DateUtils.formatTimestamp(devInfo.fundedBy.timestamp) : null,
+        //     balance: devInfo ? ethers.formatEther(devInfo.fundedBy.value) : null,
+        // });
+
         messageBuilder.setHeader({
             name: basicInfoToken.name,
             symbol: basicInfoToken.symbol,
             decimals: basicInfoToken.decimals,
-            totalSupply: Number(
-                ethers.formatUnits(basicInfoToken.totalSupply, Number(basicInfoToken.decimals))
-            ),
+            totalSupply: basicInfoToken.totalSupply,
             dev: transaction.from,
             cex: devInfo ? devInfo.label : "Unknown",
             contract: transaction.contractAddress!,
             age: devInfo ? DateUtils.formatTimestamp(devInfo.fundedBy.timestamp) : null,
             balance: devInfo ? ethers.formatEther(devInfo.fundedBy.value) : null,
         });
+
+        messageBuilder.setMiddle({
+            checksum: "0x12345678",
+            checksumAndFunding: ByteUtils.composedKeccak256ToGetID(["0x12345678", devInfo ? devInfo.label : "Unknown"]),
+            checksumAndFundingAndSupply: ByteUtils.composedKeccak256ToGetID(["0x12345678", devInfo ? devInfo.label : "Unknown", basicInfoToken.totalSupply]),
+        })
 
         return messageBuilder
     }

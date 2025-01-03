@@ -8,6 +8,7 @@ import {ContractVerifiedService} from "../../etherscan/ContractVerifiedService";
 import {CallMaxBuyService} from "../../andromeda/ethers/CallMaxBuyService";
 import {TelebotRepository} from "../../../repositories/TelebotRepository";
 import {MessageBuilder} from "../../../MessageBuilder";
+import {ByteUtils} from "../../../utils/ByteUtils";
 
 interface IEvent{
     address:string,
@@ -38,6 +39,49 @@ export class ListenContractEventsHandler {
 
         const messageBuilder = new MessageBuilder();
         messageBuilder.header = this.telebotRepository.cacheMessage[event.address].messageBuilder.header
+        messageBuilder.middle = this.telebotRepository.cacheMessage[event.address].messageBuilder.middle
+
+        messageBuilder.middle.checksumAndFundingAndSupplyAndMaxBuy = ByteUtils.composedKeccak256ToGetID([
+            "0x12345678",
+            messageBuilder.header.cex,
+            messageBuilder.header.totalSupply,
+            maxBuy || 0,
+        ])
+        messageBuilder.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGas = ByteUtils.composedKeccak256ToGetID([
+            "0x12345678",
+            messageBuilder.header.cex,
+            messageBuilder.header.totalSupply,
+            maxBuy || 0,
+            simulation.buyGas
+        ])
+        messageBuilder.middle.checksumAndFundingAndSupplyAndMaxBuyAndSellGas = ByteUtils.composedKeccak256ToGetID([
+            "0x12345678",
+            messageBuilder.header.cex,
+            messageBuilder.header.totalSupply,
+            maxBuy || 0,
+            simulation.sellGas
+        ])
+
+        messageBuilder.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGas = ByteUtils.composedKeccak256ToGetID([
+            "0x12345678",
+            messageBuilder.header.cex,
+            messageBuilder.header.totalSupply,
+            maxBuy || 0,
+            simulation.buyGas,
+            simulation.sellGas
+        ])
+
+        messageBuilder.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGasAndBuyTaxAndSellTaxAndTransferTax = ByteUtils.composedKeccak256ToGetID([
+            "0x12345678",
+            messageBuilder.header.cex,
+            messageBuilder.header.totalSupply,
+            maxBuy || 0,
+            simulation.buyGas,
+            simulation.sellGas,
+            simulation.buyTax,
+            simulation.sellTax,
+            simulation.transferTax
+        ])
 
        messageBuilder.setFooter({
             sellTax:simulation.sellTax,

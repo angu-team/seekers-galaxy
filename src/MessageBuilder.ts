@@ -1,4 +1,5 @@
 import {StringUtils} from "./utils/StringUtils";
+import {ethers} from "ethers";
 
 interface IHeader {
     name:string,
@@ -13,8 +14,14 @@ interface IHeader {
 }
 
 interface IMiddle {
-    bytecode:string | null
-    functions:any
+    checksum:string, //OK
+    checksumAndFunding:string //OK
+    checksumAndFundingAndSupply:string, //OK
+    checksumAndFundingAndSupplyAndMaxBuy?:string, //OK
+    checksumAndFundingAndSupplyAndMaxBuyAndBuyGas?:string, //OK
+    checksumAndFundingAndSupplyAndMaxBuyAndSellGas?:string, //OK
+    checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGas?:string, //OK
+    checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGasAndBuyTaxAndSellTaxAndTransferTax?:string,
 }
 
 interface IFooter {
@@ -83,21 +90,41 @@ export class MessageBuilder {
             header += `└ Balance: *${formatBalance.toFixed(4)} ETH*\n`
         }
 
-        header += `Total Supply: *${this.header.totalSupply.toLocaleString("pt-BR")}*\n`
-        header += `Decimals: ${this.header.decimals}`
+        const formatSupply = Number(ethers.formatUnits(this.header.totalSupply, Number(this.header.decimals)))
+
+        header += `Total Supply: *${formatSupply.toLocaleString("pt-BR")}*\n`
+        header += `Decimals: ${this.header.decimals}\n`
 
         return StringUtils.escapeMarkdown(header);
     }
 
     formatMiddle(){
         let middle = ""
-        // let directArrow = `[➥](${this.scan}token/${this.middle.tokenAddress})`
-        // let directDexScreener = `[📉](${this.dexScreneer}${this.middle.tokenAddress})`
-        //
-        // middle += `Label: _${this.middle.caller}_\n`
+
+        middle += `#${this.middle.checksum}\n`
+        middle += `#${this.middle.checksumAndFunding}\n`
+        middle += `#${this.middle.checksumAndFundingAndSupply}\n`
+
+        this.middle.checksumAndFundingAndSupplyAndMaxBuy && (
+            middle += `#${this.middle.checksumAndFundingAndSupplyAndMaxBuy}\n`
+        )
+        this.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGas && (
+            middle += `#${this.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGas}\n`
+        )
+        this.middle.checksumAndFundingAndSupplyAndMaxBuyAndSellGas && (
+            middle += `#${this.middle.checksumAndFundingAndSupplyAndMaxBuyAndSellGas}\n`
+        )
+        this.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGas && (
+            middle += `#${this.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGas}\n`
+        )
+        this.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGasAndBuyTaxAndSellTaxAndTransferTax && (
+            middle += `#${this.middle.checksumAndFundingAndSupplyAndMaxBuyAndBuyGasAndSellGasAndBuyTaxAndSellTaxAndTransferTax}\n`
+        )
+
+
         // middle += directArrow + "`" + this.middle.tokenAddress + "`" + directDexScreener + "\n"
-        //
-        return middle;
+
+        return StringUtils.escapeMarkdown(middle);
     }
 
     formatFooter(){
