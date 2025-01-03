@@ -1,4 +1,5 @@
-import {ContractRepository} from "../../repositories/etherscan/ContractRepository";
+import {ContractRepository as EtherscanContractRepository} from "../../repositories/etherscan/ContractRepository" ;
+import {ContractRepository as BasescanContractRepository} from "../../repositories/basescan/ContractRepository" ;
 
 interface IResponse {
     verified:boolean,
@@ -6,7 +7,7 @@ interface IResponse {
 }
 
 export class ContractVerifiedService {
-    constructor(private contractRepository:ContractRepository) {
+    constructor(private contractRepository:EtherscanContractRepository | BasescanContractRepository) {
     }
 
     async exec(address:string){
