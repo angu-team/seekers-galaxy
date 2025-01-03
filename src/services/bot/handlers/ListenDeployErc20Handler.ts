@@ -23,6 +23,7 @@ export class ListenDeployErc20Handler {
     async handle(userId: number, transaction: TransactionReceipt[]) {
         transaction.map(async (transaction) => {
             const basicInfoToken = await this.callBasicInfoTokenService.exec(797182203, transaction.contractAddress!)
+            if(!basicInfoToken.totalSupply || basicInfoToken.totalSupply == "0") return false
 
             const devInfo = await this.getDevInfo(transaction.from);
             const messageBuilder = this.buildMessage(transaction, basicInfoToken, devInfo);
@@ -54,12 +55,13 @@ export class ListenDeployErc20Handler {
 
     private async getDevInfo(devAddress: string) {
         const fundedBy = await this.fundedByService.exec(devAddress);
-        const labelToFundedBy = await this.elasticRepository.getLabelByAddress(fundedBy.from);
+
+        const labelToFundedBy = await this.elasticRepository.getLabelByAddress(fundedBy.from).catch(() => {});
 
         return {
             address: devAddress,
             fundedBy,
-            label: labelToFundedBy.label,
+            label: labelToFundedBy ? labelToFundedBy.label : "Unknown",
         };
     }
 
