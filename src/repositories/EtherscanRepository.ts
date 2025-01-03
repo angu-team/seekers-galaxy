@@ -16,6 +16,12 @@ interface IParams {
 }
 
 export class EtherscanRepository {
+    networkId:number;
+
+    constructor(networkId:number) {
+        this.networkId = networkId;
+    }
+
     ETHERSCAN_KEYS = [
         {key: "6Q5BQTPKSXHPQNJYS554W8UYFPA4PF89GD", disponibility: 0,networkId:1},
         {key: "URK2V81FGZ8VJ7Q48XYIWU6MFEQ58UYV5E", disponibility: 0,networkId:1},
@@ -122,21 +128,21 @@ export class EtherscanRepository {
         }
     }
 
-    async getSourceCode(address: string,networkId:number = 1):Promise<IResponse> {
-        const key = await this.getDisponibleEtherscanKey(networkId)
+    async getSourceCode(address: string):Promise<IResponse> {
+        const key = await this.getDisponibleEtherscanKey()
         this.setIndisponibleApi(key,2)
 
-        const url = `${this.urls[networkId]}?module=contract&action=getsourcecode&address=${address}&apikey=${key}`;
+        const url = `${this.urls[this.networkId]}?module=contract&action=getsourcecode&address=${address}&apikey=${key}`;
         this.sourceCodeCache[address] ??= await AxiosClient.make(url, {}, {}, {}, "get");
 
         return this.sourceCodeCache[address]
     }
 
-    async txList(address:string,params:IParams,networkId:number = 1):Promise<IResponse>{
-        const key = await this.getDisponibleEtherscanKey(networkId)
+    async txList(address:string,params:IParams):Promise<IResponse>{
+        const key = await this.getDisponibleEtherscanKey()
         this.setIndisponibleApi(key,2)
 
-        const url = `${this.urls[networkId]}?module=account&action=txlist&address=${address}&apikey=${key}`;
+        const url = `${this.urls[this.networkId]}?module=account&action=txlist&address=${address}&apikey=${key}`;
         return AxiosClient.make(url,{},params,{},"get");
     }
 
