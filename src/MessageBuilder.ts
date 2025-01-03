@@ -1,19 +1,13 @@
 interface IHeader {
-    chain:string
-    block:{
-        blockNumber:number
-        gasUsed:number,
-        gwei:number
-    }
-    token:{
-        name:string,
-        symbol:string
-    }
+    twitterReuseResponse:string,
+    siteCheckResponse:string,
+    dexResponse:string
 }
 
 interface IMiddle {
-    caller:string
-    tokenAddress:string
+    distroResponse:string,
+    earlyResponse:string,
+    freshResponse:string,
 }
 
 interface IFooter {
