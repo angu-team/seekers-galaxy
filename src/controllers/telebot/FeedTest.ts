@@ -1,5 +1,6 @@
 import {TelebotServer} from "../TelebotServer";
 import {MugetsoCommandSequenceFeedService} from "../../services/bot/MugetsoCommandSequenceFeedService";
+import {parseInput} from "./TestDTO";
 
 export class FeedTest {
     private static commandSequenceFeedService:MugetsoCommandSequenceFeedService;
@@ -9,9 +10,10 @@ export class FeedTest {
         FeedTest.commandSequenceFeedService = commandSequenceFeedService;
     }
 
-    @TelebotServer.ReceiveMessage(/^\/(site|coin|twitter)\s+(.+)$/g, "pattern")
+    @TelebotServer.ReceiveMessage(/^\/(site|token|twitter)\s+(.+)$/g, "pattern")
     public static async feed(chatId: number, command: string, args: string, nameOrChat: string, messageId: number, text: string) {
-        return FeedTest.commandSequenceFeedService.sendCommands(command,args)
-        // return {message: "Feed"}
+        const dto = parseInput(args)
+        const message = await FeedTest.commandSequenceFeedService.sendCommands(dto)
+        return {message}
     }
 }
